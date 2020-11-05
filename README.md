@@ -1,3 +1,30 @@
+## Set up API first
+
+Before using the front end application we need to set up our backend, which handles our API.
+It's written in python3 using the Flask microframework. The chromebook parts data is stored in a simple json that gets passed to the react built front end. 
+
+### Create Virtual Environment for python
+`cd ./api`
+`python3 -m venv venv`
+
+### Activate virtual environment
+`source ./venv/bin/activate`
+
+### Install dependencies from requirments.txt
+`pip install -r requirements.txt`
+
+### Run Flask API on localserver
+`flask run`
+or
+`cd ..`
+`npm run api`
+
+### Run react development server
+`cd ..` (if you're still in ./api directory)
+`npm run start`
+
+
+# Extra React.js information:
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
