@@ -13,6 +13,7 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
+    "api": "cd api && flask run",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
