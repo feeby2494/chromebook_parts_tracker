@@ -1,0 +1,479 @@
+[
+  {
+    "brands": {
+      "Dell": [
+        {
+          "model_name": "REPAIR-DELL-CB1C13",
+          "model_number": "CB1C13",
+          "repairs": [
+            {
+              "assembly": "DELL-CB1C13-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-GLASS",
+              "parts": [
+                  "DELL-CB11-GLASS",
+                  "7179K"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-LCD",
+              "parts": [
+                  "NT116WHM-N21",
+                  "NT116WHM-N11",
+                  "N116BGE-EA2REVC.3",
+                  "B116XTN02.3-HW:2A/FW:0"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-TOPCOVER",
+              "parts": [
+                  "56JWV"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-LVDS",
+              "parts": [
+                  "DD0ZM7LC010",
+                  "23ZM7LAWI10"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-CAMERA",
+              "parts": [
+                  "FHTVF"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-HINGECOVER",
+              "parts": [
+                  "D11G1-HINGECOVER"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-HINGE-L",
+              "parts": [
+                  "FBZM7003010"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-HINGE-R",
+              "parts": [
+                  "FBZM7004010"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-WIFI-ANTENNA",
+              "parts": [
+                  "DQ6E15G4100"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-PALMREST",
+              "parts": [
+                  "CK4ND",
+                  "WR67C"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-BOTTOMCOVER",
+              "parts": [
+                  "VY6KH",
+                  "X9XCN",
+                  "0VY6KH"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-BATTERY",
+              "parts": [
+                  "1132N"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-SPEAKERS",
+              "parts": [
+                  "CH8TH"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-WIFI-CARD",
+              "parts": [
+                  "K2GW5"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-HEATSINK",
+              "parts": [
+                  "FGMJ2"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-FAN",
+              "parts": [
+                  "M46X2"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-DC-JACK",
+              "parts": [
+                  "PHXNH",
+                  "DD0ZM7AD000"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-IO-BOARD",
+              "parts": [
+                  "9CKY7"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-TRACKPAD-CABLE",
+              "parts": [
+                  "KF6MP"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-LED-BOARD",
+              "parts": [
+                  "R8DJR"
+              ]
+            },
+            {
+              "assembly": "DELL-CB1C13-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-CB1C13-SCREWSET",
+              "parts": [
+                  "DELL11CB1C13-GEN1-SCREWSET"
+              ]
+            }
+          ]
+        },
+        {
+          "model_name": "REPAIR-DELL-P22T",
+          "model_number": "P22T",
+          "repairs": [
+            {
+              "assembly": "DELL-P22T-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-LCD-NON-TOUCH",
+              "parts": [
+                "NT116WHM-N21",
+                "NT116WHM-N11",
+                "N116BGE-EA2REVC.3",
+                "B116XTN02.3-HW:2A/FW:0"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-LCD-TOUCH",
+              "parts": [
+                "NV116WHM-A20",
+                "RJXPT",
+                "B116XTT01.1-HW:1A/FW:0",
+                "B116XTT01.1-HW:0A/FW:0",
+                "B116XAT02.2-HW:0A/FW:1"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-TOPCOVER-BLK",
+              "parts": [
+                "3CP5R",
+                "60MY1",
+                "WFTT3",
+                "GNHJG",
+                "N4DDV",
+                "3CP5R-WITHLVDS/HINGES"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-TOPCOVER-BLUE",
+              "parts": [
+                "MP5XR",
+                "FK2JJ"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-BEZEL",
+              "parts": [
+                "XP4KJ",
+                "WFFTC",
+                "HM71C",
+                "W2H2T",
+                "W3TXP",
+                "Y2H2T"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-LVDS-NON-TOUCH",
+              "parts": [
+                "R4NXP",
+                "PD4H4",
+                "DD0ZM8LC000",
+                "DD0ZM8LC010",
+                "DD0ZM8LC440"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-LVDS-TOUCH",
+              "parts": [
+                "6KMJY"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-SCREW-COVER",
+              "parts": [
+                "DL-CB11-3120-BEZELSTICKER"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-HINGE-L",
+              "parts": [
+                "FBZM8003010",
+                "KM6V"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-HINGE-R",
+              "parts": [
+                "FBZM8002010",
+                "42T0J"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-CAMERA",
+              "parts": [
+                "F9KGF"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-PALMREST-BLK",
+              "parts": [
+                "R36YR",
+                "RM8HM",
+                "38ZM8TCWI00"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-PALMREST-BLUE",
+              "parts": [
+                "38ZM8TCWI30",
+                "38ZM8TCWI70",
+                "38ZM8TCWI10"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-WIFI-CARD",
+              "parts": [
+                "GPFNK",
+                "784645-005",
+                "04X6007",
+                "20200552",
+                "755529-005",
+                "KI.WKN01.006"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-LED-BOARD",
+              "parts": [
+                "DAZM8YB34D0"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-SPEAKERS",
+              "parts": [
+                "5MXYN"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-DC-JACK",
+              "parts": [
+                "9F21D"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-BOTTOMCOVER",
+              "parts": [
+                "XYYH3"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-P22T-BATTERY",
+              "parts": [
+                "XKPD0",
+                "KTCCN",
+                "5R9DD"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-IO-BOARD",
+              "parts": [
+                "M90DT"
+              ]
+            },
+            {
+              "assembly": "DELL-P22T-TOPCASE-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CB-P22T-MBSWAP",
+              "parts": [
+                "H4WJ5",
+                "AG-3120-MB01"
+              ]
+            }
+          ]
+        },
+        {
+          "model_name": "REPAIR-DELL-CRM3180",
+          "model_number": "CRM3180",
+          "repairs": [
+            {
+              "assembly": "DELL-CRM3180-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CRM3180-LCD",
+              "parts": [
+                "N116BGE-EA2REVC.2"
+              ]
+            }
+          ]
+        },
+        {
+          "model_name": "REPAIR-DELL-CRM3189",
+          "model_number": "CRM3189",
+          "repairs": [
+            {
+              "assembly": "DELL-CRM3189-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CRM3189-TOUCHSCREEN",
+              "parts": [
+                "798C5-NOANTENNA/LEDBOARD",
+                "KG3NX",
+                "KG3NX-NOFRAME"
+              ]
+            }
+          ]
+        },
+        {
+          "model_name": "REPAIR-DELL-CRM5190-EE",
+          "model_number": "CRM5190-EE",
+          "repairs": [
+            {
+              "assembly": "DELL-CRM5190-EE-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CRM5190-EE-LCD-NON-TOUCH",
+              "parts": [
+                "N116BGE-EA2REVC.2-3180"
+              ]
+            }
+          ]
+        },
+        {
+          "model_name": "REPAIR-DELL-CRM5190",
+          "model_number": "CRM5190",
+          "repairs": [
+            {
+              "assembly": "DELL-CRM5190-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CRM5190-TOUCHSCREEN-ASSEMBLY",
+              "parts": [
+                "BDZ05",
+                "BDZ06",
+                "K98FW"
+              ]
+            }
+          ]
+        },
+        {
+          "model_name": "REPAIR-DELL-CRM7310",
+          "model_number": "CRM7310",
+          "repairs": [
+            {
+              "assembly": "DELL-CRM7310-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CRM7310-LCD-NON-TOUCH",
+              "parts": [
+                "CYWXX",
+                "N133HSE-EA3-REV.C3",
+                "VYT96"
+              ]
+            }
+          ]
+        },
+        {
+          "model_name": "REPAIR-DELL-CRM3380",
+          "model_number": "CRM3380",
+          "repairs": [
+            {
+              "assembly": "DELL-CRM3380-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-CRM3380-LCD-NON-TOUCH",
+              "parts": [
+                "HB133WX1-201"
+              ]
+            }
+          ]
+        },
+        {
+          "model_name": "REPAIR-DELL-CRM3100",
+          "model_number": "CRM3100",
+          "repairs": [
+            {
+              "assembly": "DELL-3100-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-DELL-3100-LCD-NTCH",
+              "parts": [
+                "FGF20-3100",
+                "B116XTN02.3-HW:2B/FW:0-3180",
+                "N116BCA-EA1-REVC.1-3180",
+                "NT116WHM-N21-3180"
+              ]
+            }
+          ]
+        }
+      ],
+      "HP": [
+        {
+          "model_name": "REPAIR-HP-11-G1",
+          "model_number": "HP-11-G1",
+          "repairs": [
+            {
+              "assembly": "HP-11-G1-DISPLAY-ASSEMBLY",
+              "repair_type": "REPAIR-HP-11-G1-LCD",
+              "parts": [
+                "LP116WH6-SLA1"
+              ]
+            }
+          ]
+        }
+      ],
+      "Samsung": [],
+      "Lenovo": [],
+      "Acer": [],
+      "Asus": []
+    }
+  }
+
+]
