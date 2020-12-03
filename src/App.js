@@ -1,6 +1,13 @@
 import './App.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 
 // Main React Component
 
@@ -43,19 +50,13 @@ class App extends React.Component {
     })
     .then(response => response.json())
     .then((data) => {
-      console.log(data[0].brands["Dell"].filter((model) => {
-        return model.model_name === "REPAIR-DELL-CB1C13"
-      })[0].repairs.map((repair) => {
-        return repair.repair_type
-      }));
       this.setState({
-        chromebook_parts: data
-      }, () => {
-        const brands = Object.keys(this.state.chromebook_parts[0].brands);
-        this.setState({
-          brands: brands
-        })
+        chromebook_parts: data,
+        brands: Object.keys(data['brands'])
       });
+      console.log(
+        Object.keys(data['brands']['dell'])
+      )
     });
   }
   componentDidMount(){
@@ -82,13 +83,7 @@ class App extends React.Component {
       current_model_name: null
     }, () => {
       this.setState({
-        current_path: this.state.chromebook_parts[0].brands[this.state.current_brand]
-      }, () => {
-        this.setState({
-          models: this.state.current_path.map((model) => {
-            return model.model_name;
-          })
-        });
+        models: Object.keys(this.state.chromebook_parts['brands'][this.state.current_brand])
       });
     });
 
@@ -102,16 +97,8 @@ class App extends React.Component {
       parts: null
     }, () => {
       this.setState({
-        current_path: this.state.chromebook_parts[0].brands[this.state.current_brand].filter((model) => {
-                      return model.model_name === this.state.current_model_name
-                    })[0]
-      }, () => {
-        this.setState({
-          repairs: this.state.current_path.repairs.map((repair) => {
-            return repair.repair_type
-          })
-        });
-      });
+        repairs: Object.keys(this.state.chromebook_parts['brands'][this.state.current_brand][this.state.current_model_name])
+      })
     });
   }
   handleModelNumber(event){
@@ -122,15 +109,7 @@ class App extends React.Component {
       current_repair: event.target.value,
     }, () => {
       this.setState({
-        current_path: this.state.chromebook_parts[0].brands[this.state.current_brand].filter((model) => {
-                      return model.model_name === this.state.current_model_name
-                    })[0].repairs.filter((repair) => {
-                      return repair.repair_type === this.state.current_repair
-                    })
-      }, () => {
-        this.setState({
-          parts: this.state.current_path[0].parts
-        });
+        parts: this.state.chromebook_parts['brands'][this.state.current_brand][this.state.current_model_name][this.state.current_repair]["parts"]
       });
     });
   }
@@ -146,64 +125,82 @@ class App extends React.Component {
 
     return (
       <div className="App">
-        <form>
-          <label>Choose a Brand:</label>
-          <select id="select-brand" onChange={this.handleBrand}>
-            <option disabled="disabled" selected="selected">Select a Brand</option>
-            {
-              this.state.brands.map((brand) => {
-                return <option value={brand}>{brand}</option>
-              })
-            }
-          </select>
-            {this.state.current_brand  ?
-                <div>
-                  <label> Choose Model </label>
-                  <select id="select-model" onChange={this.handleModelName}>
-                    <option disabled="disabled" selected="selected">Select a Model</option>
-                    {
-                      this.state.models.map((model) => {
-                        return <option value={model}>{model}</option>
-                      })
-                    }
-                  </select>
-                </div>
-              :
-                <br />
+        <Container>
+          <Row className="mt-5">
+            <Col sm={12} align="center">
+              <Card>
+                <Card.Body>
+                  <Form>
+                    <Form.Label>Choose a Brand:</Form.Label>
+                    <Form.Control as="select" id="select-brand" onChange={this.handleBrand}>
+                      <option disabled="disabled" selected="selected">Select a Brand</option>
+                      {
+                        this.state.brands.map((brand) => {
+                          return <option value={brand}>{brand}</option>
+                        })
+                      }
+                    </Form.Control>
+                      {this.state.current_brand  ?
+                          <div>
+                            <Form.Label> Choose Model </Form.Label>
+                            <Form.Control as="select" id="select-model" onChange={this.handleModelName}>
+                              <option disabled="disabled" selected="selected">Select a Model</option>
+                              {
+                                this.state.models.map((model) => {
+                                  return <option value={model}>{model}</option>
+                                })
+                              }
+                            </Form.Control>
+                          </div>
+                        :
+                          <br />
 
-            }
-            <br />
-            {
-              this.state.current_model_name ?
-                <div>
-                  <label>Choose Repair Type</label>
-                  <select id="select-repair" onChange={this.handleRepair}>
-                    <option value="" selected disabled hidden>Choose here</option>
-                    {
-                          this.state.repairs.map((repair) => {
-                            return <option value={repair}>{repair}</option>
-                          })
-                    }
-                  </select>
-                </div>
-              :
-                <br />
-            }
-            <button onClick={this.handleParts}>Find parts for this repair</button>
-        </form>
-        {
-          this.state.current_parts ?
-            <div>
-              <h3>Avaibale Parts for this repair</h3>
-              <ul>
-                {this.state.current_parts.map((part) => {
-                  return <li>{part}</li>
-                })}
-              </ul>
-            </div>
-          :
-            <br />
-        }
+                      }
+                      <br />
+                      {
+                        this.state.current_model_name ?
+                          <div>
+                            <Form.Label>Choose Repair Type</Form.Label>
+                            <Form.Control as="select" id="select-repair" onChange={this.handleRepair}>
+                              <option value="" selected disabled hidden>Choose here</option>
+                              {
+                                    this.state.repairs.map((repair) => {
+                                      return <option value={repair}>{repair}</option>
+                                    })
+                              }
+                            </Form.Control>
+                          </div>
+                        :
+                          <br />
+                      }
+                      <Button className="mt-2" onClick={this.handleParts}>Find parts for this repair</Button>
+                  </Form>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm={12} align="center">
+              <Card>
+                <Card.Body>
+                  {
+                    this.state.current_parts ?
+                      <div>
+                        <ListGroup as="ul">
+                          <ListGroup.Item as="li" active>Avaibale Parts for this repair</ListGroup.Item>
+                          {this.state.current_parts.map((part) => {
+                            return <ListGroup.Item as="li">{part}</ListGroup.Item>
+                          })}
+                        </ListGroup>
+                      </div>
+                    :
+                      <br />
+                  }
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
       </div>
     );
   }
