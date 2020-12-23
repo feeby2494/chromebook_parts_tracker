@@ -1,0 +1,8 @@
+import json
+
+
+def test_index(app, client):
+    res = client.get('/api/get_brands')
+    assert res.status_code == 200
+    expected = {"name": "Hi"}
+    assert expected == json.loads(res.get_data(as_text=True))
