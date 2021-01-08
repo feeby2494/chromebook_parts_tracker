@@ -28,12 +28,13 @@ class App extends React.Component {
       current_parts : []
     }
     this.getChromebookJSON = this.getChromebookJSON.bind(this);
-    this.fetchBrands = this.fetchBrands.bind(this);
-    this.fetchModels = this.fetchModels.bind(this);
-    this.fetchRepairs = this.fetchRepairs.bind(this);
-    this.fetchParts = this.fetchParts.bind(this);
+    this.setBrands = this.setBrands.bind(this);
+    this.setModels = this.setModels.bind(this);
+    this.setRepairs = this.setRepairs.bind(this);
+    this.setParts = this.setParts.bind(this);
     this.handleBrand = this.handleBrand.bind(this);
     this.handleModelName = this.handleModelName.bind(this);
+    this.handleModelNumber = this.handleModelNumber.bind(this);
     this.handleRepair = this.handleRepair.bind(this);
     this.handleParts = this.handleParts.bind(this);
   }
@@ -59,103 +60,20 @@ class App extends React.Component {
     });
   }
   componentDidMount(){
-    // this.getChromebookJSON();
-    this.fetchBrands();
+    this.getChromebookJSON();
   }
+  setBrands(event) {
 
-  fetchBrands() {
-    fetch('http://127.0.0.1:5000/api/get_brands', {
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then((data) => {
-      console.log(data.brands);
-      this.setState({
-        brands: data.brands
-      })
-    });
   }
+  setModels(event) {
 
-  fetchModels(brand) {
-    fetch(`http://127.0.0.1:5000/api/get_models/${brand}`, {
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then((data) => {
-      console.log(data.models)
-      this.setState({
-        // models: Object.keys(this.state.chromebook_parts['brands'][this.state.current_brand])
-        models: data.models
-      });
-    });
   }
+  setRepairs(event) {
 
-  fetchRepairs(model) {
-    fetch(`http://127.0.0.1:5000/api/get_repairs/${model}`, {
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then((data) => {
-      console.log(Object.keys(data));
-      this.setState({
-        // repairs: Object.keys(this.state.chromebook_parts['brands'][this.state.current_brand][this.state.current_model_name])
-        repairs: Object.keys(data)
-      })
-    });
   }
+  setParts(event) {
 
-  fetchParts(repair) {
-    fetch(`http://127.0.0.1:5000/api/get_parts/${repair}`, {
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then((data) => {
-      console.log(Object.keys(data));
-      this.setState({
-        // parts: this.state.chromebook_parts['brands'][this.state.current_brand][this.state.current_model_name][this.state.current_repair]["parts"]
-        parts: Object.keys(data)
-      });
-    });
   }
-  // fetchInventories(part) {
-  //   fetch(`http://127.0.0.1:5000/api/get_inventories/${part}`, {
-  //     mode: 'cors',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     }
-  //   })
-  //   .then(response => response.json())
-  //   .then((data) => {
-  //     console.log(Object.keys(data));
-  //     return Object.keys(data);
-  //   });
-  // }
-  // fetchLocations(inventory) {
-  //   fetch(`http://127.0.0.1:5000/api/get_locations/${inventory}`, {
-  //     mode: 'cors',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     }
-  //   })
-  //   .then(response => response.json())
-  //   .then((data) => {
-  //     console.log(Object.keys(data));
-  //     return Object.keys(data);
-  //   });
-  // }
-
   handleBrand(event){
     this.setState({
       current_brand: event.target.value,
@@ -164,11 +82,9 @@ class App extends React.Component {
       current_parts: null,
       current_model_name: null
     }, () => {
-      this.fetchModels(this.state.current_brand);
-      // this.setState({
-      //   // models: Object.keys(this.state.chromebook_parts['brands'][this.state.current_brand])
-      //   models: this.fetchModels(this.state.current_brand)
-      // });
+      this.setState({
+        models: Object.keys(this.state.chromebook_parts['brands'][this.state.current_brand])
+      });
     });
 
 
@@ -180,15 +96,21 @@ class App extends React.Component {
       current_repair: null,
       parts: null
     }, () => {
-      this.fetchRepairs(this.state.current_model_name)
+      this.setState({
+        repairs: Object.keys(this.state.chromebook_parts['brands'][this.state.current_brand][this.state.current_model_name])
+      })
     });
   }
+  handleModelNumber(event){
 
+  }
   handleRepair(event){
     this.setState({
       current_repair: event.target.value,
     }, () => {
-      this.fetchParts(this.state.current_repair)
+      this.setState({
+        parts: this.state.chromebook_parts['brands'][this.state.current_brand][this.state.current_model_name][this.state.current_repair]["parts"]
+      });
     });
   }
   handleParts(event){

@@ -3,7 +3,6 @@ import os
 import sys
 from flask import Flask, redirect, Response
 from flask_cors import CORS, cross_origin
-from .models.chromebook_inventory import db
 from flask_sqlalchemy  import SQLAlchemy
 from dotenv import load_dotenv
 load_dotenv()
