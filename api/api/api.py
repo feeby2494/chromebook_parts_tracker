@@ -7,6 +7,10 @@ from api.models.chromebook_inventory import db, Brands, Models, Repairs, Parts, 
 
 #Importing app from the api package! Different from my ussual methods.
 
+@app.route('/')
+def root():
+    return Response(json.dumps({"message": "I work!"}), mimetype='application/json')
+
 @app.route('/api/chromebook_parts')
 def get_chromebook_parts():
     with open(os.path.join( app.static_folder, 'json/', 'chromebook_parts.json'), 'r') as json_file:
