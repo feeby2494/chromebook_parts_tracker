@@ -28,6 +28,7 @@ api/__pycache__/
 .env.development.local
 .env.test.local
 .env.production.local
+api/get-pip.py
 
 npm-debug.log*
 yarn-debug.log*
