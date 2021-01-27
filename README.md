@@ -1,7 +1,7 @@
 ## Set up API first
 
 Before using the front end application we need to set up our backend, which handles our API.
-It's written in python3 using the Flask microframework. The chromebook parts data is stored in a simple json that gets passed to the react built front end. 
+It's written in python3 using the Flask microframework. The chromebook parts data was stored in a simple json that gets passed to the react built front end, but now the data is stored in a SQLite database, which is included!
 
 ### Create Virtual Environment for python
 `cd ./api`
@@ -12,6 +12,9 @@ It's written in python3 using the Flask microframework. The chromebook parts dat
 
 ### Install dependencies from requirments.txt
 `pip install -r requirements.txt`
+
+### Setup your .env files in ./api.api and .api.api/data
+FLASK_DB="<name of database>" //Remember database is included, so this isn't much of a secret! It will be in the future though, when invenory is added!
 
 ### Run Flask API on localserver
 `flask run`
