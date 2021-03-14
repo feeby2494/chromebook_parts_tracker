@@ -358,7 +358,8 @@ class App extends React.Component {
       inventories: [],
       current_parts: null,
       current_model_name: null,
-      current_inventories: []
+      current_inventories: [],
+      showAddParts: false
     }, () => {
       if (this.state.current_brand !== "add_brand") {
         this.fetchModels(this.state.current_brand);
@@ -389,7 +390,8 @@ class App extends React.Component {
       current_repair: null,
       current_inventories: [],
       parts: null,
-      inventories: []
+      inventories: [],
+      showAddParts: false
     }, () => {
       this.fetchRepairs(this.state.current_model_name)
     });
@@ -409,6 +411,7 @@ class App extends React.Component {
   handleRepair(event){
     this.setState({
       current_repair: event.target.value,
+      showAddParts: false,
     }, () => {
       this.fetchRepairs(this.state.current_model_name);
       this.fetchParts(this.state.current_repair);
@@ -578,7 +581,7 @@ handleShowAddInventory(event) {
                           <div>
                             <Form.Label>Choose Repair Type</Form.Label>
                             <Form.Control as="select" id="select-repair" onChange={this.handleRepair}>
-                              <option value="" selected disabled hidden>Choose here</option>
+                              <option disabled="disabled" selected="selected">Select a Repair</option>
                               {
                                     this.state.repairs.map((repair) => {
                                       return <option value={repair}>{repair}</option>
@@ -592,6 +595,7 @@ handleShowAddInventory(event) {
                                   <Card.Body>
                                     <Form.Label> New Repair Area </Form.Label>
                                     <Form.Control as="select" id="select-repair-area" onChange={this.handleNewRepairArea}>
+                                      <option disabled="disabled" selected="selected">Choose between Display or Topcase Assembly</option>
                                       <option value="Topcase Assembly">Topcase Assembly</option>
                                       <option value="Display Assembly">Display Assembly</option>
                                     </Form.Control>
@@ -613,8 +617,8 @@ handleShowAddInventory(event) {
                       {
                         (this.state.current_repair && this.state.current_repair !== "add_repair") ?
                           <ButtonGroup aria-label="Parts for this Repair">
-                            <Button className="mt-2 mr-2" onClick={this.handleParts}>Check Inventory for this repair</Button>
-                            <Button className="mt-2" onClick={this.handleShowAddParts}>Add parts for this repair</Button>
+                            <Button className="mt-2 mr-2" variant="info" onClick={this.handleParts}>Check Inventory for this repair</Button>
+                            <Button className="mt-2" variant="success" onClick={this.handleShowAddParts}>Add parts for this repair</Button>
                           </ButtonGroup>
                         :
                           <br />
@@ -659,8 +663,10 @@ handleShowAddInventory(event) {
 
                               </ListGroup.Item>
                             })}
-
-                            <Button className="ml-2" onClick={this.handleShowAddInventory} variant="success">Add Inventory for this part</Button>
+                            <ButtonGroup aria-label="Inventory for this Part">
+                              <Button className="mt-2 mr-2" variant="warning">Update Inventory for this part</Button>
+                              <Button className="mt-2" onClick={this.handleShowAddInventory} variant="success">Add Inventory for this part</Button>
+                            </ButtonGroup>
                             {
                               (this.state.showAddInventory) ?
                                 <div>
@@ -676,7 +682,7 @@ handleShowAddInventory(event) {
                                       }
                                     </Form.Control>
                                     <Form.Label> Location of inventory </Form.Label>
-                                    <Form.Control as="input" id="input-location" onChange={this.handlePostLocation}>
+                                    <Form.Control as="input" id="input-location" onChange={this.handleLocation}>
 
                                     </Form.Control>
                                     <Form.Control as="select" id="select-location" onChange={this.handleLocation}>
