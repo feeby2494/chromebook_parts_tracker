@@ -78,7 +78,7 @@ class App extends React.Component {
 
   //                         METHODS
   getChromebookJSON(event) {
-    fetch('http://127.0.0.1:5000/api/chromebook_parts', {
+    fetch(`${process.env.REACT_APP_API_URL}/chromebook_parts`, {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
@@ -102,7 +102,7 @@ class App extends React.Component {
   }
 
   fetchBrands() {
-    fetch('http://127.0.0.1:5000/api/get_brands', {
+    fetch(`${process.env.REACT_APP_API_URL}/get_brands`, {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
@@ -120,7 +120,7 @@ class App extends React.Component {
   postBrand() {
     console.log(`Added brand: ${this.state.newBrandName}`)
 
-    fetch('http://127.0.0.1:5000/api/get_brands', {
+    fetch(`${process.env.REACT_APP_API_URL}/get_brands`, {
       mode: 'cors',
       method: "POST",
       body: JSON.stringify({"brand_name" : this.state.newBrandName}),
@@ -140,7 +140,7 @@ class App extends React.Component {
   }
 
   fetchModels(brand) {
-    fetch(`http://127.0.0.1:5000/api/get_models/${brand}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/get_models/${brand}`, {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
@@ -159,7 +159,7 @@ class App extends React.Component {
   postModel(brand) {
     console.log(`Added brand: ${this.state.newModelName}`)
 
-    fetch(`http://127.0.0.1:5000/api/get_models/${brand}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/get_models/${brand}`, {
       mode: 'cors',
       method: "POST",
       body: JSON.stringify({"model_name" : this.state.newModelName}),
@@ -180,7 +180,7 @@ class App extends React.Component {
   }
 
   fetchRepairs(model) {
-    fetch(`http://127.0.0.1:5000/api/get_repairs/${model}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/get_repairs/${model}`, {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
@@ -199,7 +199,7 @@ class App extends React.Component {
   postRepair(model) {
     console.log(`Added Repair: ${this.state.newRepairType}`)
 
-    fetch(`http://127.0.0.1:5000/api/get_repairs/${model}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/get_repairs/${model}`, {
       mode: 'cors',
       method: "POST",
       body: JSON.stringify({"repair_type" : this.state.newRepairType, "repair_area": this.state.newRepairArea}),
@@ -220,7 +220,7 @@ class App extends React.Component {
   }
 
   fetchParts(repair) {
-    fetch(`http://127.0.0.1:5000/api/get_parts/${repair}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/get_parts/${repair}`, {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
@@ -243,7 +243,7 @@ class App extends React.Component {
   postPart(repair) {
     console.log(`Added Part: ${this.state.newPartNumber}`)
 
-    fetch(`http://127.0.0.1:5000/api/get_parts/${repair}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/get_parts/${repair}`, {
       mode: 'cors',
       method: "POST",
       body: JSON.stringify({"part_number" : this.state.newPartNumber}),
@@ -268,7 +268,7 @@ class App extends React.Component {
   }
 
   fetchInventories(part) {
-    fetch(`http://127.0.0.1:5000/api/get_inventory/${part}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/get_inventory/${part}`, {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
@@ -292,7 +292,7 @@ class App extends React.Component {
     });
   }
   // fetchLocations(inventory) {
-  //   fetch(`http://127.0.0.1:5000/api/get_locations/${inventory}`, {
+  //   fetch(`${process.env.REACT_APP_API_URL}/get_locations/${inventory}`, {
   //     mode: 'cors',
   //     headers: {
   //       'Content-Type': 'application/json'
@@ -308,7 +308,7 @@ class App extends React.Component {
   postInventory(part) {
     console.log(`Added Inventory: ${this.state.newInventory}`)
 
-    fetch(`http://127.0.0.1:5000/api/get_inventory/${part}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/get_inventory/${part}`, {
       mode: 'cors',
       method: "POST",
       body: JSON.stringify({"count" : this.state.current_count, "location_desc" : this.state.current_location}),
@@ -336,7 +336,7 @@ class App extends React.Component {
   }
 
   fetchLocations() {
-    fetch(`http://127.0.0.1:5000/api/get_locations/`, {
+    fetch(`${process.env.REACT_APP_API_URL}/get_locations/`, {
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json'
