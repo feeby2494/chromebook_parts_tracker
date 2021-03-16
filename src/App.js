@@ -40,7 +40,8 @@ class App extends React.Component {
       newPartNumber: null,
       newInventory: null,
       showAddParts: false,
-      showAddInventory: false
+      showAddInventory: false,
+      showUpdateInventory: false,
     }
     this.getChromebookJSON = this.getChromebookJSON.bind(this);
     this.fetchBrands = this.fetchBrands.bind(this);
@@ -53,6 +54,7 @@ class App extends React.Component {
     this.postPart = this.postPart.bind(this);
     this.fetchInventories = this.fetchInventories.bind(this);
     this.postInventory = this.postInventory.bind(this);
+    this.updateInventory = this.updateInventory.bind(this);
     this.fetchLocations = this.fetchLocations.bind(this);
     this.handleBrand = this.handleBrand.bind(this);
     this.handlePostBrand = this.handlePostBrand.bind(this);
@@ -74,6 +76,9 @@ class App extends React.Component {
     this.handleLocation = this.handleLocation.bind(this);
     this.handlePostInventory = this.handlePostInventory.bind(this);
     this.submitPostInventory = this.submitPostInventory.bind(this);
+    this.handleShowUpdateInventory = this.handleShowUpdateInventory.bind(this);
+    this.handleUpdateInventory = this.handleUpdateInventory.bind(this);
+    this.submitUpdateInventory = this.submitUpdateInventory.bind(this);
   }
 
   //                         METHODS
@@ -335,6 +340,36 @@ class App extends React.Component {
     });
   }
 
+  updateInventory(part) {
+    console.log(`Added Inventory: ${this.state.newInventory}`)
+
+    fetch(`${process.env.REACT_APP_API_URL}/get_inventory/${part}`, {
+      mode: 'cors',
+      method: "PATCH",
+      body: JSON.stringify({"count" : this.state.current_count, "location_desc" : this.state.current_location}),
+      headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then((data) => {
+      if(Object.keys(data).length){
+          let inventory_state = this.state.inventories.slice();
+          inventory_state.push(data)
+          console.log("inventory: " + inventory_state)
+
+          this.setState({
+              inventories: inventory_state
+          }, () => {
+            this.setState({
+                current_inventories: this.state.inventories
+            });
+          });
+      }
+    });
+  }
+
   fetchLocations() {
     fetch(`${process.env.REACT_APP_API_URL}/get_locations/`, {
         mode: 'cors',
@@ -412,6 +447,8 @@ class App extends React.Component {
     this.setState({
       current_repair: event.target.value,
       showAddParts: false,
+      showUpdateInventory: false,
+      showAddInventory: false
     }, () => {
       this.fetchRepairs(this.state.current_model_name);
       this.fetchParts(this.state.current_repair);
@@ -504,6 +541,23 @@ handleShowAddInventory(event) {
 
   submitPostInventory(event) {
     this.postInventory(this.state.current_part_selected)
+  }
+
+  handleShowUpdateInventory(event){
+    console.log(` the part is: ${this.props.children}`)
+    this.setState({
+      showUpdateInventory: !this.state.showUpdateInventory
+    });
+  }
+
+  handleUpdateInventory(event){
+    this.setState({
+      current_count: event.target.value
+    });
+  }
+
+  submitUpdateInventory(event) {
+    this.updateInventory(this.state.current_part_selected)
   }
 
   render(){
@@ -664,7 +718,7 @@ handleShowAddInventory(event) {
                               </ListGroup.Item>
                             })}
                             <ButtonGroup aria-label="Inventory for this Part">
-                              <Button className="mt-2 mr-2" variant="warning">Update Inventory for this part</Button>
+                              <Button className="mt-2 mr-2" onClick={this.handleShowUpdateInventory} variant="warning">Update Inventory for this part</Button>
                               <Button className="mt-2" onClick={this.handleShowAddInventory} variant="success">Add Inventory for this part</Button>
                             </ButtonGroup>
                             {
@@ -704,8 +758,44 @@ handleShowAddInventory(event) {
                                 </div>
                               :
                                 <p> </p>
+                            }
+                            {
+                              (this.state.showUpdateInventory) ?
+                                <div>
+                                <Card>
+                                  <Card.Body>
+                                    <Form.Label> Select Part to add Inventory to </Form.Label>
+                                    <Form.Control as="select" id="select-part_name" onChange={this.handleCurrentPartSelected}>
+                                      <option value="" selected disabled hidden>Choose here</option>
+                                      {
+                                            this.state.parts.map((part) => {
+                                              return <option value={part}>{part}</option>
+                                            })
+                                      }
+                                    </Form.Control>
+                                    <Form.Label> New Location of inventory </Form.Label>
+                                    <Form.Control as="input" id="input-location" onChange={this.handleLocation}>
 
+                                    </Form.Control>
+                                    <Form.Control as="select" id="select-location" onChange={this.handleLocation}>
+                                      <option value="" selected disabled hidden>Choose here</option>
+                                      {
+                                            this.state.locations.map((location) => {
+                                              return <option value={location}>{location}</option>
+                                            })
+                                      }
+                                      <option value="add_location">Add New Location</option>
+                                    </Form.Control>
+                                    <Form.Label> New Count of inventory </Form.Label>
+                                    <Form.Control as="input" id="input-inventory" onChange={this.handleUpdateInventory}>
 
+                                    </Form.Control>
+                                    <Button onClick={this.submitUpdateInventory} variant="success">Submit new count</Button>
+                                  </Card.Body>
+                                </Card>
+                                </div>
+                              :
+                                <p> </p>
                             }
                             <ListGroup.Item as="li" active>Inventory for parts</ListGroup.Item>
                             {this.state.current_inventories.map((inventory) => {

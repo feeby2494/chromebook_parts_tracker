@@ -283,6 +283,17 @@ def get_inventory(part_number):
         return Response(json.dumps({"message": "okay"}), mimetype='application/json')
 
     # Better to use a put or patch method
+    if request.method == 'PATCH':
+        part_id = get_part_id(part_number)
+        location_desc = request.get_json()["location_desc"]
+        location_id_by_name = db.session.query(Locations).filter_by(location_desc=location_desc).first().location_id
+        count = request.get_json()["count"]
+        current_inventory = db.session.query(Inventories).filter_by(part_id=part_id).first()
+        current_inventory.count = count
+        current_inventory.location_id = location_id_by_name
+        db.session.commit()
+
+        return Response(json.dumps({"message": "okay"}), mimetype='application/json')
 
 @app.route('/api/get_locations/', methods = ['GET'])
 def get_locations():
