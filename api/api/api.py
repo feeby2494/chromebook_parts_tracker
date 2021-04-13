@@ -295,7 +295,7 @@ def get_inventory(part_number):
 
         return Response(json.dumps({"message": "okay"}), mimetype='application/json')
 
-@app.route('/api/get_locations/', methods = ['GET', 'POST'])
+@app.route('/api/get_locations/', methods = ['GET', 'POST', 'PATCH'])
 def get_locations():
     if request.method == 'GET':
         locations = db.session.query(Locations).all()
@@ -312,6 +312,16 @@ def get_locations():
         db.session.add(new_location)
         db.session.commit()
         return Response(json.dumps({"message": f"okay: Added {location_desc} to the Locations table"}), mimetype='application/json')
+
+    if request.method == 'PATCH':
+        location_desc = request.get_json()["location_desc"]
+        current_locations = db.session.query(Locations).filter_by(location_desc=location_desc).first()
+        # Just to reference the old location desc, so I can return it back in response
+        old_location_desc = current_locations.location_desc
+        current_locations.location_desc = location_desc
+        db.session.add(new_location)
+        db.session.commit()
+        return Response(json.dumps({"message": f"okay: changed  {old_location_desc} to {location_desc}"}), mimetype='application/json')
 
 # class Parts(db.Model):
 #     __tablename__ = "parts"
