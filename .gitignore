@@ -14,6 +14,7 @@
 /.pnp
 .pnp.js
 /api/venv
+/api/api/init_scripts/venv/
 
 # testing
 /coverage

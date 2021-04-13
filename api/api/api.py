@@ -320,11 +320,12 @@ def get_locations():
 
     if request.method == 'PATCH':
         location_desc = request.get_json()["location_desc"]
-        current_locations = db.session.query(Locations).filter_by(location_desc=location_desc).first()
+        location_id = request.get_json()["location_id"]
+        current_locations = db.session.query(Locations).filter_by(location_id=location_id).first()
         # Just to reference the old location desc, so I can return it back in response
         old_location_desc = current_locations.location_desc
         current_locations.location_desc = location_desc
-        db.session.add(new_location)
+        db.session.add(current_locations)
         db.session.commit()
         return Response(json.dumps({"message": f"okay: changed  {old_location_desc} to {location_desc}"}), mimetype='application/json')
 
@@ -348,3 +349,5 @@ def get_locations():
 #     count = db.Column(db.Integer, nullable=False)
 #     part_id = (db.Integer, db.ForeignKey("parts.part_id"))
 #     location_id = (db.Integer, db.ForeignKey("locations.location_id"))
+if __name__ == '__main__':
+    app.run(debug=True)
