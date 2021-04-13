@@ -295,7 +295,7 @@ def get_inventory(part_number):
 
         return Response(json.dumps({"message": "okay"}), mimetype='application/json')
 
-@app.route('/api/get_locations/', methods = ['GET'])
+@app.route('/api/get_locations/', methods = ['GET', 'POST'])
 def get_locations():
     if request.method == 'GET':
         locations = db.session.query(Locations).all()
@@ -306,7 +306,12 @@ def get_locations():
             location_object[location.location_desc]["location_id"] = location.location_id
         return Response(json.dumps(location_object), mimetype='application/json')
 
-
+    if request.method == 'POST':
+        location_desc = request.get_json()["location_desc"]
+        new_location = Locations(location_desc=location_desc)
+        db.session.add(new_location)
+        db.session.commit()
+        return Response(json.dumps({"message": f"okay: Added {location_desc} to the Locations table"}), mimetype='application/json')
 
 # class Parts(db.Model):
 #     __tablename__ = "parts"
