@@ -247,6 +247,10 @@ def get_inventory(part_number):
             location_ids.append(location.location_id)
         return location_ids
 
+    def get_location_desc_per_location_id(location_id):
+        location_desc = db.session.query(Locations).filter_by(location_id=location_id).first().location_desc
+        return location_desc
+
     def get_inventory(part_id, location_id):
         inventory = db.session.query(Inventories).filter_by(part_id=part_id,location_id=location_id).first()
         return inventory
@@ -267,6 +271,7 @@ def get_inventory(part_number):
             inventory_object[part_number] = {}
             inventory_object[part_number][location] = {}
             inventory_object[part_number][location]['count'] = inventory_by_loc.count
+            inventory_object[part_number][location]['location_desc'] = get_location_desc_per_location_id(location)
 
 
         return Response(json.dumps(inventory_object), mimetype='application/json')

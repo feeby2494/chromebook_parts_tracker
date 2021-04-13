@@ -810,12 +810,20 @@ handleShowAddInventory(event) {
   // Object.keys(map).map((key) => map[key]);
                               let array = Object.keys(inventory).map((part_name) => {
                                   return Object.keys(inventory[part_name]).map((location) => {
-                                      return Object.keys(inventory[part_name][location]).map((count) => {
-                                          let count_name = inventory[part_name][location][count];
-                                          let location_name = location;
-                                          let part_item_name = part_name;
-                                          return <ListGroup.Item as="li">Part Number: {part_item_name} | location_id: {location_name} | Count: {count_name} </ListGroup.Item>
-                                      });
+                                    let count_name = inventory[part_name][location]["count"];
+                                    let location_name = inventory[part_name][location]["location_desc"];
+                                    let location_id = location;
+                                    let part_item_name = part_name;
+
+
+                                    return <ListGroup.Item as="li">Part Number: {part_item_name} | Location_id: {location_id} | Count: {count_name} | Location_name: {location_name}</ListGroup.Item>
+                                      // return Object.keys(inventory[part_name][location]).map((count, location_desc) => {
+                                      //     let count_name = inventory[part_name][location][count];
+                                      //     let location_name = inventory[part_name][location][location_desc];
+                                      //     let location_id = location;
+                                      //     let part_item_name = part_name;
+                                      //     return <ListGroup.Item as="li">Part Number: {part_item_name} | Location_id: {location_id} | Count: {count_name} | Location_name: {location_name}</ListGroup.Item>
+                                      // });
                                   });
                               })
 
