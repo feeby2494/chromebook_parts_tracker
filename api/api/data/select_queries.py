@@ -3,6 +3,8 @@ from .create_chromebook_inventory_db import create_connection, execute_read_quer
 from dotenv import load_dotenv
 import os
 
+
+
 load_dotenv()
 
 def get_brand_id(connection, brand_name):

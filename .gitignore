@@ -15,6 +15,7 @@ api/__pycache__/
 /.pnp
 .pnp.js
 /api/venv
+/api/api/init_scripts/venv/
 
 # testing
 /coverage
@@ -24,6 +25,7 @@ api/__pycache__/
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
