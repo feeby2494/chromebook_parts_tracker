@@ -25,3 +25,6 @@ print(sys.path)
 
 # Importing API and View modules
 import api.api
+
+if __name__ == '__main__':
+    app.run(debug=True)

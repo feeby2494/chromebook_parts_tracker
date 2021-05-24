@@ -1,12 +1,21 @@
 #! /usr/bin/env python3
 import requests
+import json
 
 def post_new_location(new_location_desc):
     # set up post to api for adding new location
-    r = requests.post('https://chromebooks.jamielynn.dev/api/get_locations/', data = {"location_desc" : new_location_desc})
+    r = requests.post('https://chromebooks.jamielynn.dev/api/get_locations', data = json.dumps({"location_desc" : new_location_desc}), headers = {"Content-Type" : "application/json"})
 
     # See in terminal if this is doing anything!
-    print(r.url)
+    print(r)
+
+def check_if_location_exists_array():
+    # set up post to api for adding new location
+    r = requests.get('https://chromebooks.jamielynn.dev/api/get_locations/')
+
+    # See in terminal if this is doing anything!
+    location_desc_that_exist = r.json().keys()
+    return location_desc_that_exist
 
 def build_locations():
     inventory_array = []
@@ -23,6 +32,23 @@ def build_locations():
 
     return inventory_array
 
+
+
 if __name__ == "__main__":
     inventory_system = build_locations()
     print(inventory_system)
+
+    locations_that_exist_array = check_if_location_exists_array()
+
+    for location in locations_that_exist_array:
+        if location in inventory_system:
+            inventory_system.remove(location)
+            print(f"{location} from inventory_system has been removed. \n")
+
+    print(inventory_system)
+
+    print("Now adding each new location to our inventory_system .... \n \n Please Wait....")
+
+    for new_location in inventory_system:
+        post_new_location(new_location)
+        print(f"Added {new_location} to inventory_system database")

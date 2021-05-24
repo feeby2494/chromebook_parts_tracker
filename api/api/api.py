@@ -235,7 +235,7 @@ def get_parts(repair_type):
         db.session.commit()
 
 
-@app.route('/api/get_inventory/<part_number>', methods = ['GET', 'POST', 'PATCH', 'DELETE'])
+@app.route('/api/get_inventory/<part_number>', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def get_inventory(part_number):
     def get_location_id(part_id):
         location_ids = []
@@ -288,15 +288,21 @@ def get_inventory(part_number):
         return Response(json.dumps({"message": "okay"}), mimetype='application/json')
 
     # Better to use a put or patch method
-    if request.method == 'PATCH':
+    if request.method == 'PUT':
         part_id = get_part_id(part_number)
         location_desc = request.get_json()["location_desc"]
         location_id_by_name = db.session.query(Locations).filter_by(location_desc=location_desc).first().location_id
         count = request.get_json()["count"]
         current_inventory = db.session.query(Inventories).filter_by(part_id=part_id).first()
-        current_inventory.count = count
-        current_inventory.location_id = location_id_by_name
-        db.session.commit()
+        # Geusing this is a PUT requset: if record exists, then update; if no record found, then create new one.
+        if current_inventory is None:
+            new_inventory = Inventories(count=count, part_id=part_id, location_id=location_id_by_name)
+            db.session.add(new_inventory)
+            db.session.commit()
+        else:
+            current_inventory.count = count
+            current_inventory.location_id = location_id_by_name
+            db.session.commit()
 
         return Response(json.dumps({"message": "okay"}), mimetype='application/json')
 
