@@ -87,6 +87,19 @@ def get_brands():
         brands = get_brands_json()
         return Response(json.dumps({"brands": brands}), mimetype='application/json')
 
+@app.route('/api/resolve_model_from_part_number/<part_number>', methods = ['GET'])
+def get_model_from_part(part_number):
+
+    # Need to look up part_number by given part Number
+    part_object = db.session.query(Parts).filter_by(part_number=part_number).first()
+
+    # Get the model_id (should be ForeignKey) from this queary
+    model_id = part_object.model_id
+
+    # Look up model name using model id
+    model_name = db.session.query(Models).filter_by(model_id=model_id).first().model_name
+    return Response(json.dumps({"model_name": model_name}), mimetype='application/json')
+
 
 @app.route('/api/get_models/<brand_name>', methods = ['GET', 'POST', 'DELETE'])
 def get_models(brand_name):
@@ -259,7 +272,7 @@ def get_inventory(part_number):
         part_id = db.session.query(Parts).filter_by(part_number=part_number).first().part_id
         return part_id
 
-    if request.method == 'GET':
+    def get_request_inventory():
         part_id = get_part_id(part_number)
         inventory_object = {}
         locations = get_location_id(part_id)
@@ -272,7 +285,11 @@ def get_inventory(part_number):
             inventory_object[part_number][location] = {}
             inventory_object[part_number][location]['count'] = inventory_by_loc.count
             inventory_object[part_number][location]['location_desc'] = get_location_desc_per_location_id(location)
+        return inventory_object
 
+    if request.method == 'GET':
+
+        inventory_object = get_request_inventory()
 
         return Response(json.dumps(inventory_object), mimetype='application/json')
 
@@ -285,7 +302,9 @@ def get_inventory(part_number):
         db.session.add(new_inventory)
         db.session.commit()
 
-        return Response(json.dumps({"message": "okay"}), mimetype='application/json')
+        inventory_object = get_request_inventory()
+
+        return Response(json.dumps(inventory_object), mimetype='application/json')
 
     # Better to use a put or patch method
     if request.method == 'PUT':
@@ -304,7 +323,28 @@ def get_inventory(part_number):
             current_inventory.location_id = location_id_by_name
             db.session.commit()
 
-        return Response(json.dumps({"message": "okay"}), mimetype='application/json')
+        inventory_object = get_request_inventory()
+
+        return Response(json.dumps(inventory_object), mimetype='application/json')
+
+@app.route('/api/use_part/<part_number>', methods = ['PATCH'])
+def use_part(part_number):
+
+        if request.method == 'PATCH':
+            part_id = db.session.query(Parts).filter_by(part_number=part_number).first().part_id
+            current_inventory = db.session.query(Inventories).filter_by(part_id=part_id).first()
+            # Geusing this is a PUT requset: if record exists, then update; if no record found, then create new one.
+
+            if current_inventory is not None:
+                if current_inventory.count is 0:
+                    return Response(json.dumps({"message": "Count is already zero!"}), mimetype='application/json')
+                current_inventory.count -= 1 # Hope this is right syntax
+                current_inventory.location_id = current_inventory.location_id
+                db.session.commit()
+
+
+            return Response(json.dumps(current_inventory), mimetype='application/json')
+        return Response(json.dumps({"message": "Error: could not deduct one from inventory"}), mimetype='application/json')
 
 @app.route('/api/get_locations/', methods = ['GET', 'POST', 'PATCH'])
 def get_locations():
@@ -334,6 +374,20 @@ def get_locations():
         db.session.add(current_locations)
         db.session.commit()
         return Response(json.dumps({"message": f"okay: changed  {old_location_desc} to {location_desc}"}), mimetype='application/json')
+
+@app.route('/api/inventory_analysis', methods = ['GET', 'POST'])
+def analyse_inventory():
+
+    # Get all inventories that have a count less than 5
+    if request.method == 'GET':
+        pass
+    # Get all inventories that have a certain count or less
+    if request.method == 'POST':
+        pass
+
+    return None
+
+
 
 # class Parts(db.Model):
 #     __tablename__ = "parts"
