@@ -25,16 +25,16 @@ class App extends React.Component {
 
     return (
       <div className="App">
-        <BrowserRouter history={history}>
+        <BrowserRouter>
           <Navigation />
 
 
           {/* Switch and router will go here  */}
 
           <Switch>
-            <Route path="/chromebook_parts/" exact component={InventoryManagement} />
-            <Route path="/chromebook_parts/inventoryManagement" exact component={InventoryManagement} />
-            <Route path="/chromebook_parts/resolveModelFromPart" exact component={ResolveModelFromPart} />
+            <Route path="/" exact component={InventoryManagement} />
+            <Route path="/inventoryManagement" exact component={InventoryManagement} />
+            <Route path="/resolveModelFromPart" exact component={ResolveModelFromPart} />
 
          </Switch>
        </BrowserRouter>

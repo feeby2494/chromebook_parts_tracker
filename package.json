@@ -43,5 +43,5 @@
     ]
   },
   "proxy": "http://127.0.0.1:5000/api/",
-  "home": "http://127.0.0.1:3000/chromebook_parts/"
+  "home": "http://127.0.0.1:3000/"
 }
