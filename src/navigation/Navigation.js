@@ -18,8 +18,8 @@ class Navigation extends React.Component {
             <Nav.Link href="/">Home</Nav.Link>
 
             <NavDropdown title="Helper Tools" id="basic-nav-dropdown">
-              <NavDropdown.Item href="/inventoryManagement">Manage Inventory</NavDropdown.Item>
-              <NavDropdown.Item href="/resolveModelFromPart">Find model From Part Number</NavDropdown.Item>
+              <NavDropdown.Item href="/chromebook_parts/inventoryManagement">Manage Inventory</NavDropdown.Item>
+              <NavDropdown.Item href="/chromebook_parts/resolveModelFromPart">Find model From Part Number</NavDropdown.Item>
               <NavDropdown.Divider />
 
             </NavDropdown>
