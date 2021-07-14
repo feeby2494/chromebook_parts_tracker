@@ -53,6 +53,7 @@ class InventoryManagement extends React.Component {
     this.postPart = this.postPart.bind(this);
     this.fetchInventories = this.fetchInventories.bind(this);
     this.postInventory = this.postInventory.bind(this);
+    this.clearOutInventories = this.clearOutInventories.bind(this);
     this.updateInventory = this.updateInventory.bind(this);
     this.fetchLocations = this.fetchLocations.bind(this);
     this.handleBrand = this.handleBrand.bind(this);
@@ -261,7 +262,7 @@ class InventoryManagement extends React.Component {
       console.log(Object.keys(data));
       this.setState({
         // parts: this.state.chromebook_parts['brands'][this.state.current_brand][this.state.current_model_name][this.state.current_repair]["parts"]
-        parts: Object.keys(data[0])
+        parts: Object.keys(data)
       }, () => {
         this.setState({
           current_parts: this.state.parts
@@ -282,6 +283,7 @@ class InventoryManagement extends React.Component {
     .then((data) => {
       if(Object.keys(data).length){
           let inventory_state = this.state.inventories.slice();
+          console.log(this.state.inventories)
           inventory_state.push(data)
           console.log("inventory: " + inventory_state)
 
@@ -324,10 +326,12 @@ class InventoryManagement extends React.Component {
     .then(response => response.json())
     .then((data) => {
       if(Object.keys(data).length){
-          let inventory_state = this.state.inventories.slice();
-          inventory_state.push(data)
-          console.log("inventory: " + inventory_state)
-
+          // Set this up where I filter out old inventory for current selected part, then
+          // push new inventory object in array of inventory,
+          // then update inventory presented on page
+          let inventory_state = this.state.inventories.filter(item => !(item[part]))
+          inventory_state.push(data);
+          console.log(inventory_state)
           this.setState({
               inventories: inventory_state
           }, () => {
@@ -339,8 +343,20 @@ class InventoryManagement extends React.Component {
     });
   }
 
+  clearOutInventories() {
+    this.setState({
+        inventories: []
+    }, () => {
+      this.setState({
+          current_inventories: []
+      });
+    });
+  }
+
+
   updateInventory(part) {
     console.log(`Added Inventory: ${this.state.newInventory}`)
+    // this.clearOutInventories();
 
     fetch(`${process.env.REACT_APP_API_URL}/get_inventory/${part}`, {
       mode: 'cors',
@@ -354,10 +370,12 @@ class InventoryManagement extends React.Component {
     .then(response => response.json())
     .then((data) => {
       if(Object.keys(data).length){
-          let inventory_state = this.state.inventories.slice();
-          inventory_state.push(data)
-          console.log("inventory: " + inventory_state)
-
+          // Set this up where I filter out old inventory for current selected part, then
+          // push new inventory object in array of inventory,
+          // then update inventory presented on page
+          let inventory_state = this.state.inventories.filter(item => !(item[part]))
+          inventory_state.push(data);
+          console.log(inventory_state)
           this.setState({
               inventories: inventory_state
           }, () => {
@@ -369,6 +387,8 @@ class InventoryManagement extends React.Component {
     });
   }
 
+
+// This was working perfect awhile ago, so have no clue.
   useOnePart(part, location) {
     console.log(`changed inventory by one: ${this.state.newInventory}`)
 
@@ -384,10 +404,12 @@ class InventoryManagement extends React.Component {
     .then(response => response.json())
     .then((data) => {
       if(Object.keys(data).length){
-          let inventory_state = this.state.inventories.slice();
-          inventory_state.push(data)
-          console.log("inventory: " + inventory_state)
-
+          // Set this up where I filter out old inventory for current selected part, then
+          // push new inventory object in array of inventory,
+          // then update inventory presented on page
+          let inventory_state = this.state.inventories.filter(item => !(item[part]))
+          inventory_state.push(data);
+          console.log(inventory_state)
           this.setState({
               inventories: inventory_state
           }, () => {
@@ -499,6 +521,10 @@ class InventoryManagement extends React.Component {
 
   submitPostRepair(event){
     this.postRepair(this.state.current_model_name);
+    // this.setState({
+    //   parts: this.state.parts.push(event.target.value),
+    //   current_parts: this.state.parts
+    // })
   }
 
   handleParts(event){
@@ -587,6 +613,7 @@ handleShowAddInventory(event) {
 
   submitUpdateInventory(event) {
     this.updateInventory(this.state.current_part_selected)
+
   }
 
   render(){
@@ -737,7 +764,7 @@ handleShowAddInventory(event) {
                       (this.state.current_parts.length > 0) ?
                         <div>
                           <ListGroup as="ul">
-                            <ListGroup.Item as="li" active>Avaibale Parts for this repair</ListGroup.Item>
+                            <ListGroup.Item as="li" active>Available Parts for this repair</ListGroup.Item>
                             {this.state.current_parts.map((part) => {
                               return <ListGroup.Item as="li">
 
@@ -833,13 +860,13 @@ handleShowAddInventory(event) {
                             }
                             <ListGroup.Item as="li" active>Inventory for parts</ListGroup.Item>
                             {this.state.current_inventories.map((inventory) => {
-                              console.log(Object.keys(inventory).map((part_name) => {
-                                  return Object.keys(inventory[part_name]).map((location) => {
-                                      return Object.keys(inventory[part_name][location]).map((count) => {
-                                          return inventory[part_name][location][count];
-                                      });
-                                  });
-                              }))
+                              // console.log(Object.keys(inventory).map((part_name) => {
+                              //     return Object.keys(inventory[part_name]).map((location) => {
+                              //         return Object.keys(inventory[part_name][location]).map((count) => {
+                              //             return inventory[part_name][location][count];
+                              //         });
+                              //     });
+                              // }))
 
   // Object.keys(map).map((key) => map[key]);
                               let array = Object.keys(inventory).map((part_name) => {

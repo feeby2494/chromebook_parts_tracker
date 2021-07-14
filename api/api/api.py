@@ -330,21 +330,20 @@ def get_inventory(part_number):
 @app.route(f"{os.environ.get('API_ROOT_URL')}/use_part/<part_number>", methods = ['PATCH'])
 def use_part(part_number):
 
-        if request.method == 'PATCH':
-            part_id = db.session.query(Parts).filter_by(part_number=part_number).first().part_id
-            current_inventory = db.session.query(Inventories).filter_by(part_id=part_id).first()
-            # Geusing this is a PUT requset: if record exists, then update; if no record found, then create new one.
+    if request.method == 'PATCH':
+        part_id = db.session.query(Parts).filter_by(part_number=part_number).first().part_id
+        current_inventory = db.session.query(Inventories).filter_by(part_id=part_id).first()
+        # Geusing this is a PUT requset: if record exists, then update; if no record found, then create new one.
 
-            if current_inventory is not None:
-                if current_inventory.count is 0:
-                    return Response(json.dumps({"message": "Count is already zero!"}), mimetype='application/json')
-                current_inventory.count -= 1 # Hope this is right syntax
-                current_inventory.location_id = current_inventory.location_id
-                db.session.commit()
+        if current_inventory is not None:
+            if current_inventory.count is 0:
+                return Response(json.dumps({"message": "Count is already zero!"}), mimetype='application/json')
+            current_inventory.count -= 1 # Hope this is right syntax
+            db.session.commit()
 
 
-            return Response(json.dumps(current_inventory), mimetype='application/json')
-        return Response(json.dumps({"message": "Error: could not deduct one from inventory"}), mimetype='application/json')
+        return Response(json.dumps(current_inventory), mimetype='application/json')
+    return Response(json.dumps({"message": "Error: could not deduct one from inventory"}), mimetype='application/json')
 
 @app.route(f"{os.environ.get('API_ROOT_URL')}/get_locations/", methods = ['GET', 'POST', 'PATCH'])
 def get_locations():

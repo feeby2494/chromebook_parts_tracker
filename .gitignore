@@ -6,7 +6,8 @@
 
 # Database
 ./api/api/data
-/api/api/data
+./api/api/data
+./api/api/data/test_db.sqlite
 
 # Pycache
 ./api/api/__pycache__/
