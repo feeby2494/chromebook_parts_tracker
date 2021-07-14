@@ -4,6 +4,7 @@ import json
 from flask import redirect, Response, request
 from api.data import select_queries
 from api.models.chromebook_inventory import db, Brands, Models, Repairs, Parts, Inventories, Locations
+import urllib.parse
 
 from api.data import sqlite_queries
 # from flask_sqlalchemy import SQLAlchemy
@@ -329,7 +330,9 @@ def get_inventory(part_number):
 
 @app.route(f"{os.environ.get('API_ROOT_URL')}/use_part/<part_number>", methods = ['PATCH'])
 def use_part(part_number):
-
+    # Need to convert the URL encoded string, part_number, to UTF-8, so we can query the DB!
+    part_number = urllib.parse.unquote(part_number)
+    
     if request.method == 'PATCH':
         part_id = db.session.query(Parts).filter_by(part_number=part_number).first().part_id
         current_inventory = db.session.query(Inventories).filter_by(part_id=part_id).first()

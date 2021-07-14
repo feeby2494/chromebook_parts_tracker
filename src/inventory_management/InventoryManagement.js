@@ -461,7 +461,7 @@ class InventoryManagement extends React.Component {
   handlePostBrand(event){
     console.log(event.target.value);
     this.setState({
-      newBrandName: event.target.value
+      newBrandName: event.target.value.trim()
     });
   }
 
@@ -486,7 +486,7 @@ class InventoryManagement extends React.Component {
   handlePostModel(event){
     console.log(event.target.value);
     this.setState({
-      newModelName: event.target.value
+      newModelName: event.target.value.trim()
     });
   }
 
@@ -515,7 +515,7 @@ class InventoryManagement extends React.Component {
 
   handleNewRepairType(event){
     this.setState({
-      newRepairType: event.target.value
+      newRepairType: event.target.value.trim()
     });
   }
 
@@ -548,7 +548,7 @@ class InventoryManagement extends React.Component {
 
   handleNewPartNumber(event){
     this.setState({
-      newPartNumber: event.target.value
+      newPartNumber: event.target.value.trim()
     });
   }
 
