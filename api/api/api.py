@@ -3,7 +3,7 @@ import os
 import json
 from flask import redirect, Response, request
 from api.data import select_queries
-from api.models.chromebook_inventory import db, Brands, Models, Repairs, Parts, Inventories, Locations
+from api.models.chromebook_inventory import db, Brands, Models, Repairs, Parts, Inventories, Locations, part_repair_association
 import urllib.parse
 
 from api.data import sqlite_queries
@@ -26,7 +26,7 @@ from api.data import sqlite_queries
 # model_query.get_brands()
 #Importing app from the api package! Different from my ussual methods.
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/chromebook_parts")
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/chromebook_parts")
 def get_chromebook_parts():
     with open(os.path.join( app.static_folder, 'json/', 'chromebook_parts.json'), 'r') as json_file:
         data = json.load(json_file)
@@ -38,7 +38,7 @@ def get_chromebook_parts():
 #     data = {"name": "Hi"}
 #     return Response(json.dumps(data), mimetype='application/json')
 #
-@app.route(f"{os.environ.get('API_ROOT_URL')}/rebuild_json")
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/rebuild_json")
 def rebuild_json():
     if 'chromebook_parts_dynamic.json' in os.listdir(os.path.join( app.static_folder, 'json/')):
         print("{} exists".format('chromebook_parts_dynamic.json'))
@@ -56,7 +56,7 @@ def rebuild_json():
 #     data = {"name": "Hi"}
 #     return Response(json.dumps(data), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/get_brands", methods = ['GET', 'POST', 'DELETE'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_brands", methods = ['GET', 'POST', 'DELETE'])
 def get_brands():
     def get_brands_json():
         brands = []
@@ -88,11 +88,12 @@ def get_brands():
         brands = get_brands_json()
         return Response(json.dumps({"brands": brands}), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/resolve_model_from_part_number/<part_number>", methods = ['GET'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/resolve_model_from_part_number/<part_number>", methods = ['GET'])
 def get_model_from_part(part_number):
 
     # Need to look up part_number by given part Number
-    part_object = db.session.query(Parts).filter_by(part_number=part_number).first()
+    # Using like will make this match more parts
+    part_object = db.session.query(Parts).filter_by(part_number.like(f'%{part_number.upper()}%')).first()
 
     # Get the model_id (should be ForeignKey) from this queary
     model_id = part_object.model_id
@@ -102,8 +103,13 @@ def get_model_from_part(part_number):
     return Response(json.dumps({"model_name": model_name}), mimetype='application/json')
 
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/get_models/<brand_name>", methods = ['GET', 'POST', 'DELETE'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_models/<brand_name>", methods = ['GET', 'POST', 'DELETE'])
 def get_models(brand_name):
+
+    # URL decode model_name first:
+    brand_name = urllib.parse.unquote(brand_name)
+    print(brand_name)
+
     def get_brand_id():
         brand_id = db.session.query(Brands).filter_by(brand_name=brand_name).first().brand_id
         return brand_id
@@ -149,14 +155,18 @@ def get_models(brand_name):
         models = get_models_json(brand_id)
         return Response(json.dumps({"models": models}), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/get_repairs/<model_name>", methods = ['GET', 'POST', 'DELETE'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_repairs/<model_name>", methods = ['GET', 'POST', 'DELETE'])
 def get_repairs(model_name):
+
+    # URL decode model_name first:
+    model_name = urllib.parse.unquote(model_name)
 
     def get_model_id():
         model_id = db.session.query(Models).filter_by(model_name=model_name).first().model_id
         return model_id
 
-    model_id = get_model_id()
+    if model_name != "add_model":
+        model_id = get_model_id()
 
     def get_repairs_json(model_id):
         repairs = {}
@@ -169,8 +179,10 @@ def get_repairs(model_name):
         return repairs
 
     if request.method == 'GET':
-        repairs = get_repairs_json(model_id)
-        return Response(json.dumps(repairs), mimetype='application/json')
+        if model_name != "add_model":
+            repairs = get_repairs_json(model_id)
+            return Response(json.dumps(repairs), mimetype='application/json')
+        return Response(json.dumps({"message":"No repairs for this model yet"}), mimetype='application/json')
 
     if request.method == 'POST':
         repair_type = request.get_json()["repair_type"]
@@ -191,26 +203,29 @@ def get_repairs(model_name):
         repairs = get_repairs_json(model_id)
         return Response(json.dumps(repairs), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/get_parts/<repair_type>", methods = ['GET', 'POST', 'DELETE'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_parts/<repair_type>", methods = ['GET', 'POST', 'DELETE'])
 def get_parts(repair_type):
+
+    # URL decode model_name first:
+    repair_type = urllib.parse.unquote(repair_type)
+
     def get_repair_id():
         repair_id = db.session.query(Repairs).filter_by(repair_type=repair_type).first().repair_id
         return repair_id
 
     repair_id = get_repair_id()
 
-    def get_parts_json(repair_id):
-        parts = {}
-        parts_data = db.session.query(Parts).filter_by(repair_id=repair_id).all()
-        print(parts_data)
-        for part in parts_data:
-            print(part.part_number)
-            parts[part.part_number] = {}
-            parts[part.part_number]['part_number'] = part.part_number
-            parts[part.part_number]["model_id"] = part.model_id
-            parts[part.part_number]["repair_id"] = part.repair_id
-            parts[part.part_number]["part_id"] = part.part_id
-        return parts
+    def get_parts_json(repair):
+
+        # Create our json return object full of parts for this repair:
+        parts_for_repair = {}
+        for association in repair.parts:
+            parts_for_repair[association.part_number] = {}
+            parts_for_repair[association.part_number]['part_number'] = association.part_number
+            parts_for_repair[association.part_number]["model_id"] = association.model_id
+            parts_for_repair[association.part_number]["part_id"] = association.part_id
+
+        return parts_for_repair
 
     def get_inventories(part_id):
         inventory_by_location = {}
@@ -223,24 +238,49 @@ def get_parts(repair_type):
 
 
     if request.method == 'GET':
-        parts = get_parts_json(repair_id)
+        parts = get_parts_json(repair_type)
         inventory = {}
         print(parts)
         for part in parts:
             if parts[part]["part_id"] is not None:
                 inventory[part] = get_inventories(parts[part]["part_id"])
-
+            print(db.session.query(Parts).filter_by(repair_id=repair_id).all().parts)
         return Response(json.dumps([parts, inventory]), mimetype='application/json')
 
     if request.method == 'POST':
-        model_id = db.session.query(Repairs).filter_by(repair_type=repair_type).first().model_id
+
+        # Define common vars
+        repair = db.session.query(Repairs).filter_by(repair_type=repair_type).first()
+        model_id = repair.model_id
         part_number = request.get_json()["part_number"]
-        new_part = Parts(part_number=part_number,model_id=model_id, repair_id=repair_id)
+
+        # 1. Add part number to DB
+        new_part = Parts(part_number=part_number,model_id=model_id)
         db.session.add(new_part)
         db.session.commit()
 
-        parts = get_parts_json(repair_id)
-        return Response(json.dumps(parts), mimetype='application/json')
+        # 2. Make many to many relationship between new part and repair
+        # Parts is the parent in this case
+        parts = db.session.query(Parts).filter_by(part_number=part_number).first()
+        parts.repair_list.append(repair)
+        db.session.add(parts)
+        db.session.commit()
+
+        # Create our json return object full of parts for this repair:
+        parts_for_repair = get_parts_json(repair)
+
+
+        # parts = get_parts_json(repair_type)
+        return Response(json.dumps(parts_for_repair), mimetype='application/json')
+
+# An example how to add a child to a parent for many to many relationship in sqlalchemy
+# p = Parent()
+# c = Child()
+# p.children.append(c)
+# db.session.add(p)
+# db.session.commit()
+
+
 
     if request.method == 'DELETE':
         data = request.get_json()["part_number"]
@@ -249,8 +289,12 @@ def get_parts(repair_type):
         db.session.commit()
 
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/get_inventory/<part_number>", methods = ['GET', 'POST', 'PUT', 'DELETE'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_inventory/<part_number>", methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def get_inventory(part_number):
+
+    # URL decode model_name first:
+    part_number = urllib.parse.unquote(part_number)
+
     def get_location_id(part_id):
         location_ids = []
 
@@ -328,11 +372,11 @@ def get_inventory(part_number):
 
         return Response(json.dumps(inventory_object), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/use_part/<part_number>", methods = ['PATCH'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/use_part/<part_number>", methods = ['PATCH'])
 def use_part(part_number):
     # Need to convert the URL encoded string, part_number, to UTF-8, so we can query the DB!
     part_number = urllib.parse.unquote(part_number)
-    
+
     if request.method == 'PATCH':
         part_id = db.session.query(Parts).filter_by(part_number=part_number).first().part_id
         current_inventory = db.session.query(Inventories).filter_by(part_id=part_id).first()
@@ -348,7 +392,7 @@ def use_part(part_number):
         return Response(json.dumps(current_inventory), mimetype='application/json')
     return Response(json.dumps({"message": "Error: could not deduct one from inventory"}), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/get_locations/", methods = ['GET', 'POST', 'PATCH'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_locations/", methods = ['GET', 'POST', 'PATCH'])
 def get_locations():
     if request.method == 'GET':
         locations = db.session.query(Locations).all()
@@ -377,7 +421,7 @@ def get_locations():
         db.session.commit()
         return Response(json.dumps({"message": f"okay: changed  {old_location_desc} to {location_desc}"}), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/inventory_analysis", methods = ['GET', 'POST'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/inventory_analysis", methods = ['GET', 'POST'])
 def analyse_inventory():
 
     # Get all inventories that have a count less than 5
