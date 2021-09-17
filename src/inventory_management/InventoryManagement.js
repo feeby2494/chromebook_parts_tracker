@@ -8,6 +8,8 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Badge from 'react-bootstrap/Badge';
+import Table from 'react-bootstrap/Table';
 
 // Main React Component
 
@@ -37,6 +39,7 @@ class InventoryManagement extends React.Component {
       newRepairType: null,
       newRepairArea: null,
       newPartNumber: null,
+      newPartInfo: null,
       newInventory: null,
       showAddParts: false,
       showAddInventory: false,
@@ -68,6 +71,7 @@ class InventoryManagement extends React.Component {
     this.submitPostRepair = this.submitPostRepair.bind(this);
     this.handleParts = this.handleParts.bind(this);
     this.handleNewPartNumber = this.handleNewPartNumber.bind(this);
+    this.handleNewPartInfo = this.handleNewPartInfo.bind(this);
     this.handleShowAddParts = this.handleShowAddParts.bind(this);
     this.submitPostPart = this.submitPostPart.bind(this);
     this.handleShowAddInventory = this.handleShowAddInventory.bind(this);
@@ -233,10 +237,15 @@ class InventoryManagement extends React.Component {
     })
     .then(response => response.json())
     .then((data) => {
-      console.log(Object.keys(data));
+      console.log(Object.keys(data[0]).map((item) => {
+        return {part_number : data[0][item].part_number, part_info : data[0][item].part_info}
+      }));
       this.setState({
         // parts: this.state.chromebook_parts['brands'][this.state.current_brand][this.state.current_model_name][this.state.current_repair]["parts"]
-        parts: Object.keys(data[0])
+        // parts: Object.keys(data[0])
+        parts: Object.keys(data[0]).map((item) => {
+          return {part_number : data[0][item].part_number, part_info : data[0][item].part_info}
+        })
       }, () => {
         this.setState({
           current_parts: this.state.parts
@@ -251,7 +260,7 @@ class InventoryManagement extends React.Component {
     fetch(`${process.env.REACT_APP_API_URL}/get_parts/${repair}`, {
       mode: 'cors',
       method: "POST",
-      body: JSON.stringify({"part_number" : this.state.newPartNumber}),
+      body: JSON.stringify({"part_number" : this.state.newPartNumber, "part_info" : this.state.newPartInfo}),
       headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
@@ -262,7 +271,10 @@ class InventoryManagement extends React.Component {
       console.log(Object.keys(data));
       this.setState({
         // parts: this.state.chromebook_parts['brands'][this.state.current_brand][this.state.current_model_name][this.state.current_repair]["parts"]
-        parts: Object.keys(data)
+        // parts: Object.keys(data)
+        parts: Object.keys(data[0]).map((item) => {
+          return {part_number : data[0][item].part_number, part_info : data[0][item].part_info}
+        })
       }, () => {
         this.setState({
           current_parts: this.state.parts
@@ -536,7 +548,7 @@ class InventoryManagement extends React.Component {
     }, () => {
         // Need to handle inventories:
         this.state.current_parts.map((part) => {
-          this.fetchInventories(part);
+          this.fetchInventories(part.part_number);
         });
         this.handleInventories(event);
       });
@@ -549,6 +561,12 @@ class InventoryManagement extends React.Component {
   handleNewPartNumber(event){
     this.setState({
       newPartNumber: event.target.value.trim()
+    });
+  }
+
+  handleNewPartInfo(event){
+    this.setState({
+      newPartInfo: event.target.value.trim()
     });
   }
 
@@ -742,6 +760,10 @@ handleShowAddInventory(event) {
                               <Form.Control as="input" id="input-part-number" onChange={this.handleNewPartNumber}>
 
                               </Form.Control>
+                              <Form.Label> Enter Part Info (This is used to differentiate between parts for differnet versions of a model. For example, Intel, MTK, or AMD versions of the same model.) :  </Form.Label>
+                              <Form.Control as="input" id="part-info" onChange={this.handleNewPartInfo}>
+
+                              </Form.Control>
                               <Button onClick={this.submitPostPart} variant="success">Add</Button>
                             </Card.Body>
                           </Card>
@@ -764,19 +786,65 @@ handleShowAddInventory(event) {
                       (this.state.current_parts.length > 0) ?
                         <div>
                           <ListGroup as="ul">
+
+
+
                             <ListGroup.Item as="li" active>Available Parts for this repair</ListGroup.Item>
-                            {this.state.current_parts.map((part) => {
+                            {/* Table Style*/}
+                              <Table striped bordered>
+                                <thead>
+                                  <tr>
+                                    <th>Part Number</th>
+                                    <th>Extra Notes</th>
+                                    <th>Use One</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {this.state.current_parts.map((item) => {
+                                    return <tr>
+
+                                        <th>
+                                          {item.part_number}
+                                        </th>
+                                        <th>
+                                          {item.part_info &&
+                                            <Badge bg="info">
+                                              <p>{ item.part_info }</p>
+                                            </Badge>
+                                          }
+                                        </th>
+                                        <th>
+                                          <Button className="ml-3" onClick={() => {this.useOnePart(item.part_number)}}>Use One</Button>
+                                        </th>
+                                    </tr>
+                                  })}
+                                </tbody>
+                              </Table>
+
+                            {/*
+                            **** UL list style ***
+                            {this.state.current_parts.map((item) => {
                               return <ListGroup.Item as="li">
 
-                                  {part}
-                                  <Button className="ml-3" onClick={() => {this.useOnePart(part)}}>Use One</Button>
+                                  {item.part_number}
+                                  {'   '}
+                                  <Button className="ml-3" onClick={() => {this.useOnePart(item.part_number)}}>Use One</Button>
+                                  {'   '}
+                                  {item.part_info &&
+                                    <Badge bg="info">
+                                      <p>Notes:</p>
+                                      <p>{ item.part_info }</p>
+                                    </Badge>
+                                  }
 
 
 
 
 
                               </ListGroup.Item>
+
                             })}
+                            */}
                             <ButtonGroup aria-label="Inventory for this Part">
                               <Button className="mt-2 mr-2" onClick={this.handleShowUpdateInventory} variant="warning">Update Inventory for this part</Button>
                               <Button className="mt-2" onClick={this.handleShowAddInventory} variant="success">Add Inventory for this part</Button>
@@ -790,7 +858,7 @@ handleShowAddInventory(event) {
                                     <Form.Control as="select" id="select-part_name" onChange={this.handleCurrentPartSelected}>
                                       <option value="" selected disabled hidden>Choose here</option>
                                       {
-                                            this.state.parts.map((part) => {
+                                            Object.keys(this.state.parts).map((part) => {
                                               return <option value={part}>{part}</option>
                                             })
                                       }
@@ -858,38 +926,61 @@ handleShowAddInventory(event) {
                               :
                                 <p> </p>
                             }
-                            <ListGroup.Item as="li" active>Inventory for parts</ListGroup.Item>
-                            {this.state.current_inventories.map((inventory) => {
-                              // console.log(Object.keys(inventory).map((part_name) => {
-                              //     return Object.keys(inventory[part_name]).map((location) => {
-                              //         return Object.keys(inventory[part_name][location]).map((count) => {
-                              //             return inventory[part_name][location][count];
-                              //         });
-                              //     });
-                              // }))
+                            {(this.state.current_inventories.length > 0) ?
+                              <>
+                                <ListGroup.Item as="li" active>Inventory for parts</ListGroup.Item>
 
-  // Object.keys(map).map((key) => map[key]);
-                              let array = Object.keys(inventory).map((part_name) => {
-                                  return Object.keys(inventory[part_name]).map((location) => {
-                                    let count_name = inventory[part_name][location]["count"];
-                                    let location_name = inventory[part_name][location]["location_desc"];
-                                    let location_id = location;
-                                    let part_item_name = part_name;
+                                  {/*
 
+                                    I just cannot read this. How can I follow something so messy and encapsulated like this?
+                                    Both backend and frontend for inventory need to be redesigned. I litterally cannot do anything
+                                    with this code.
 
-                                    return <ListGroup.Item as="li">Part Number: {part_item_name} | Count: {count_name} | Location_name: {location_name} </ListGroup.Item>
-                                      // return Object.keys(inventory[part_name][location]).map((count, location_desc) => {
-                                      //     let count_name = inventory[part_name][location][count];
-                                      //     let location_name = inventory[part_name][location][location_desc];
-                                      //     let location_id = location;
-                                      //     let part_item_name = part_name;
-                                      //     return <ListGroup.Item as="li">Part Number: {part_item_name} | Location_id: {location_id} | Count: {count_name} | Location_name: {location_name}</ListGroup.Item>
-                                      // });
-                                  });
-                              })
+                                    Well, now it works. Have no clue. I'm not touching this mess right now!!!
+                                    */}
+                                  <Table striped bordered>
+                                  <thead>
+                                    <tr>
+                                      <td>Part Number</td>
+                                      <td>Count</td>
+                                      <td>Location</td>
+                                    </tr>
+                                  </thead>
+                                  {this.state.current_inventories.map((inventory) => {
+                                    // console.log(Object.keys(inventory).map((part_name) => {
+                                    //     return Object.keys(inventory[part_name]).map((location) => {
+                                    //         return Object.keys(inventory[part_name][location]).map((count) => {
+                                    //             return inventory[part_name][location][count];
+                                    //         });
+                                    //     });
+                                    // }))
 
-                              return <ListGroup.Item as="li">{array}</ListGroup.Item>
-                            })}
+        // Object.keys(map).map((key) => map[key]);
+                                    let array = Object.keys(inventory).map((part_name) => {
+                                        return Object.keys(inventory[part_name]).map((location) => {
+                                          let count_name = inventory[part_name][location]["count"];
+                                          let location_name = inventory[part_name][location]["location_desc"];
+                                          let location_id = location;
+                                          let part_item_name = part_name;
+
+                                          return <tr><td>{part_item_name}</td><td>{count_name}</td><td>{location_name}</td></tr>
+                                            // return Object.keys(inventory[part_name][location]).map((count, location_desc) => {
+                                            //     let count_name = inventory[part_name][location][count];
+                                            //     let location_name = inventory[part_name][location][location_desc];
+                                            //     let location_id = location;
+                                            //     let part_item_name = part_name;
+                                            //     return <ListGroup.Item as="li">Part Number: {part_item_name} | Location_id: {location_id} | Count: {count_name} | Location_name: {location_name}</ListGroup.Item>
+                                            // });
+                                        });
+                                    })
+
+                                    return <tbody>{array}</tbody>
+                                  })}
+                                </Table>
+                              </>
+                              :
+                                <> </>
+                            }
                           </ListGroup>
                         </div>
                       :

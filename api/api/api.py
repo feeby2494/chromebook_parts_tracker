@@ -209,21 +209,33 @@ def get_parts(repair_type):
     # URL decode model_name first:
     repair_type = urllib.parse.unquote(repair_type)
 
-    def get_repair_id():
-        repair_id = db.session.query(Repairs).filter_by(repair_type=repair_type).first().repair_id
-        return repair_id
-
-    repair_id = get_repair_id()
+    # def get_repair_id():
+    #     repair_id = db.session.query(Repairs).filter_by(repair_type=repair_type).first().repair_id
+    #     return repair_id
+    #
+    # repair_id = get_repair_id()
 
     def get_parts_json(repair):
 
         # Create our json return object full of parts for this repair:
         parts_for_repair = {}
+
+        # for item in part_repair_association:
+        #     if item.repair_id == repair.repair_id:
+        #         parts_for_repair[association.part_number] = {}
+        #         parts_for_repair[association.part_number]['part_number'] = association.part_number
+        #         parts_for_repair[association.part_number]["model_id"] = association.model_id
+        #         parts_for_repair[association.part_number]["part_id"] = association.part_id
+
+        # I don't understand the error here, if no parts, then repair.parts should be []
         for association in repair.parts:
             parts_for_repair[association.part_number] = {}
             parts_for_repair[association.part_number]['part_number'] = association.part_number
             parts_for_repair[association.part_number]["model_id"] = association.model_id
             parts_for_repair[association.part_number]["part_id"] = association.part_id
+            if association.part_info:
+                parts_for_repair[association.part_number]["part_info"] = association.part_info
+
 
         return parts_for_repair
 
@@ -238,13 +250,14 @@ def get_parts(repair_type):
 
 
     if request.method == 'GET':
-        parts = get_parts_json(repair_type)
+        # I don't understand the error here
+        # repair = db.session.query(Repairs).filter_by(repair_type=repair_type).first()
+        repair = Repairs.query.filter_by(repair_type=repair_type).first()
+        parts = get_parts_json(repair)
         inventory = {}
-        print(parts)
         for part in parts:
             if parts[part]["part_id"] is not None:
                 inventory[part] = get_inventories(parts[part]["part_id"])
-            print(db.session.query(Parts).filter_by(repair_id=repair_id).all().parts)
         return Response(json.dumps([parts, inventory]), mimetype='application/json')
 
     if request.method == 'POST':
@@ -253,11 +266,26 @@ def get_parts(repair_type):
         repair = db.session.query(Repairs).filter_by(repair_type=repair_type).first()
         model_id = repair.model_id
         part_number = request.get_json()["part_number"]
+        part_info = request.get_json()["part_info"]
 
-        # 1. Add part number to DB
-        new_part = Parts(part_number=part_number,model_id=model_id)
-        db.session.add(new_part)
-        db.session.commit()
+        # 0. Check if part already exists
+        part_exists = db.session.query(Parts).filter_by(part_number=part_number).first()
+        if part_exists:
+            # Check if the part_info field was updated:
+            if part_info:
+                # if differnet and not blank, then change part_exists.part_info
+                part_exists.part_info = part_info
+                db.session.commit()
+            # else pass
+            else:
+                pass
+
+
+        else:
+            # 1. Add part number to DB
+            new_part = Parts(part_number=part_number,model_id=model_id, part_info=part_info)
+            db.session.add(new_part)
+            db.session.commit()
 
         # 2. Make many to many relationship between new part and repair
         # Parts is the parent in this case
@@ -267,11 +295,14 @@ def get_parts(repair_type):
         db.session.commit()
 
         # Create our json return object full of parts for this repair:
-        parts_for_repair = get_parts_json(repair)
-
+        parts = get_parts_json(repair)
+        inventory = {}
+        for part in parts:
+            if parts[part]["part_id"] is not None:
+                inventory[part] = get_inventories(parts[part]["part_id"])
 
         # parts = get_parts_json(repair_type)
-        return Response(json.dumps(parts_for_repair), mimetype='application/json')
+        return Response(json.dumps([parts, inventory]), mimetype='application/json')
 
 # An example how to add a child to a parent for many to many relationship in sqlalchemy
 # p = Parent()
@@ -316,6 +347,8 @@ def get_inventory(part_number):
     def get_part_id(part_number):
         part_id = db.session.query(Parts).filter_by(part_number=part_number).first().part_id
         return part_id
+
+    # This is the messiest way to organize this inventory object. both this and front end need to be redesigned.
 
     def get_request_inventory():
         part_id = get_part_id(part_number)
@@ -383,7 +416,7 @@ def use_part(part_number):
         # Geusing this is a PUT requset: if record exists, then update; if no record found, then create new one.
 
         if current_inventory is not None:
-            if current_inventory.count is 0:
+            if current_inventory.count == 0:
                 return Response(json.dumps({"message": "Count is already zero!"}), mimetype='application/json')
             current_inventory.count -= 1 # Hope this is right syntax
             db.session.commit()
@@ -433,6 +466,85 @@ def analyse_inventory():
 
     return None
 
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/receive_parts/<part_number>", methods = ['GET', 'POST'])
+def receive_parts(part_number):
+    # Need to convert the URL encoded string, part_number, to UTF-8, so we can query the DB!
+    part_number = urllib.parse.unquote(part_number)
+
+    if request.method == 'GET':
+        pass
+
+    if request.method == 'POST':
+        # Get input
+        count = request.get_json()["count"]
+        location_desc = request.get_json()["location_desc"]
+        part_info = request.get_json()["part_info"]
+
+        # Add part if not part_exists
+        parts = db.session.query(Parts).filter_by(part_number=part_number).first()
+
+        if parts:
+            # continue
+            pass
+        else:
+            # add new part
+            new_part = Parts(part_number=part_number, part_info=part_info)
+            db.session.add(new_part)
+            db.session.commit()
+
+            # Get new part
+            parts = db.session.query(Parts).filter_by(part_number=part_number).first()
+
+        # Get part id of new part
+        part_id = parts.part_id
+
+        # Get loctions ID
+        location_id = db.session.query(Locations).filter_by(location_desc=location_desc).first().location_id
+
+        # Add count to inventory
+        # check if inventory exists
+        current_inventory = db.session.query(Inventories).filter_by(part_id=part_id).first()
+        # Geusing this is a PUT requset: if record exists, then update; if no record found, then create new one.
+        if current_inventory is None:
+            new_inventory = Inventories(count=count, part_id=part_id, location_id=location_id)
+            db.session.add(new_inventory)
+            db.session.commit()
+
+            # Get our new inventory
+            current_inventory = db.session.query(Inventories).filter_by(part_id=part_id).first()
+        else:
+            current_inventory.count = count
+            current_inventory.location_id = location_id
+            db.session.commit()
+
+        # Make object for inventory object
+        inventory_object = {}
+        inventory_object["count"] = count
+        inventory_object["location_id"] = location_id
+        inventory_object["location_desc"] = location_desc
+
+        # Make object for parts object
+        parts_object = {}
+        parts_object["part_number"] = part_number
+        parts_object["part_info"] = part_info
+        parts_object["part_id"] = part_id
+
+        # Return new part object and inventory object
+        return Response(json.dumps([parts_object, inventory_object]), mimetype='application/json')
+
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/add_part_to_repair_type/", methods = ['GET', 'POST'])
+def add_part_to_repair_type():
+    # get part_number and repair_type from request.json()
+    part_repair_data = (request.get_json()["part_number"], request.get_json()["repair_type"])
+
+    # Get all inventories that have a count less than 5
+    if request.method == 'GET':
+        pass
+    # Get all inventories that have a certain count or less
+    if request.method == 'POST':
+        pass
+
+    return None
 
 
 # class Parts(db.Model):

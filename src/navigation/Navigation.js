@@ -20,6 +20,7 @@ class Navigation extends React.Component {
             <NavDropdown title="Helper Tools" id="basic-nav-dropdown">
               <NavDropdown.Item href="/inventoryManagement">Manage Inventory</NavDropdown.Item>
               <NavDropdown.Item href="/resolveModelFromPart">Find model From Part Number</NavDropdown.Item>
+              <NavDropdown.Item href="/receiveParts">Receive Newly Arrived Parts</NavDropdown.Item>
               <NavDropdown.Divider />
 
             </NavDropdown>

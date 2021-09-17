@@ -46,6 +46,7 @@ class Parts(db.Model):
     part_id = db.Column(db.Integer, primary_key=True)
     part_number = db.Column(db.String, unique=True)
     alt_part_numbers = db.Column(db.String)
+    part_info = db.Column(db.String)
     model_id = db.Column(db.Integer, db.ForeignKey("models.model_id"))
     repair_list = db.relationship("Repairs", secondary=part_repair_association, backref=db.backref("parts", lazy= "dynamic"))
 
