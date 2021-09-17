@@ -26,7 +26,7 @@ from api.data import sqlite_queries
 # model_query.get_brands()
 #Importing app from the api package! Different from my ussual methods.
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/chromebook_parts")
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/chromebook_parts")
 def get_chromebook_parts():
     with open(os.path.join( app.static_folder, 'json/', 'chromebook_parts.json'), 'r') as json_file:
         data = json.load(json_file)
@@ -38,7 +38,7 @@ def get_chromebook_parts():
 #     data = {"name": "Hi"}
 #     return Response(json.dumps(data), mimetype='application/json')
 #
-@app.route(f"{os.environ.get('API_ROOT_URL')}/rebuild_json")
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/rebuild_json")
 def rebuild_json():
     if 'chromebook_parts_dynamic.json' in os.listdir(os.path.join( app.static_folder, 'json/')):
         print("{} exists".format('chromebook_parts_dynamic.json'))
@@ -56,7 +56,7 @@ def rebuild_json():
 #     data = {"name": "Hi"}
 #     return Response(json.dumps(data), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/get_brands", methods = ['GET', 'POST', 'DELETE'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_brands", methods = ['GET', 'POST', 'DELETE'])
 def get_brands():
     def get_brands_json():
         brands = []
@@ -88,7 +88,7 @@ def get_brands():
         brands = get_brands_json()
         return Response(json.dumps({"brands": brands}), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/resolve_model_from_part_number/<part_number>", methods = ['GET'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/resolve_model_from_part_number/<part_number>", methods = ['GET'])
 def get_model_from_part(part_number):
 
     # Need to look up part_number by given part Number
@@ -102,7 +102,7 @@ def get_model_from_part(part_number):
     return Response(json.dumps({"model_name": model_name}), mimetype='application/json')
 
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/get_models/<brand_name>", methods = ['GET', 'POST', 'DELETE'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_models/<brand_name>", methods = ['GET', 'POST', 'DELETE'])
 def get_models(brand_name):
     def get_brand_id():
         brand_id = db.session.query(Brands).filter_by(brand_name=brand_name).first().brand_id
@@ -149,7 +149,7 @@ def get_models(brand_name):
         models = get_models_json(brand_id)
         return Response(json.dumps({"models": models}), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/get_repairs/<model_name>", methods = ['GET', 'POST', 'DELETE'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_repairs/<model_name>", methods = ['GET', 'POST', 'DELETE'])
 def get_repairs(model_name):
 
     def get_model_id():
@@ -191,7 +191,7 @@ def get_repairs(model_name):
         repairs = get_repairs_json(model_id)
         return Response(json.dumps(repairs), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/get_parts/<repair_type>", methods = ['GET', 'POST', 'DELETE'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_parts/<repair_type>", methods = ['GET', 'POST', 'DELETE'])
 def get_parts(repair_type):
     def get_repair_id():
         repair_id = db.session.query(Repairs).filter_by(repair_type=repair_type).first().repair_id
@@ -249,7 +249,7 @@ def get_parts(repair_type):
         db.session.commit()
 
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/get_inventory/<part_number>", methods = ['GET', 'POST', 'PUT', 'DELETE'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_inventory/<part_number>", methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def get_inventory(part_number):
     def get_location_id(part_id):
         location_ids = []
@@ -328,7 +328,7 @@ def get_inventory(part_number):
 
         return Response(json.dumps(inventory_object), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/use_part/<part_number>", methods = ['PATCH'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/use_part/<part_number>", methods = ['PATCH'])
 def use_part(part_number):
     # Need to convert the URL encoded string, part_number, to UTF-8, so we can query the DB!
     part_number = urllib.parse.unquote(part_number)
@@ -348,7 +348,7 @@ def use_part(part_number):
         return Response(json.dumps(current_inventory), mimetype='application/json')
     return Response(json.dumps({"message": "Error: could not deduct one from inventory"}), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/get_locations/", methods = ['GET', 'POST', 'PATCH'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_locations/", methods = ['GET', 'POST', 'PATCH'])
 def get_locations():
     if request.method == 'GET':
         locations = db.session.query(Locations).all()
@@ -377,7 +377,7 @@ def get_locations():
         db.session.commit()
         return Response(json.dumps({"message": f"okay: changed  {old_location_desc} to {location_desc}"}), mimetype='application/json')
 
-@app.route(f"{os.environ.get('API_ROOT_URL')}/inventory_analysis", methods = ['GET', 'POST'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/inventory_analysis", methods = ['GET', 'POST'])
 def analyse_inventory():
 
     # Get all inventories that have a count less than 5
