@@ -345,7 +345,7 @@ class App extends React.Component {
 
     fetch(`${process.env.REACT_APP_API_URL}/get_inventory/${part}`, {
       mode: 'cors',
-      method: "PATCH",
+      method: "PUT",
       body: JSON.stringify({"count" : this.state.current_count, "location_desc" : this.state.current_location}),
       headers: {
       'Accept': 'application/json',
