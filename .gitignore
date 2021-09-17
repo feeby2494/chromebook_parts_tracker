@@ -4,6 +4,11 @@
 ./app_old_version_1.js
 ./app_old_version_2.js
 
+# Database
+./api/api/data
+./api/api/data
+./api/api/data/test_db.sqlite
+
 # Pycache
 ./api/api/__pycache__/
 ./api/api/data/__pycache__/
@@ -15,6 +20,7 @@ api/__pycache__/
 /.pnp
 .pnp.js
 /api/venv
+/api/api/venv
 /api/api/init_scripts/venv/
 
 # testing

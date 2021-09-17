@@ -14,10 +14,11 @@
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
+    "router": "^1.3.5",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "api": "cd api && cd api && flask run",
+    "api": "cd api && cd api && source ./venv/bin/activate && flask run",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -42,5 +43,5 @@
     ]
   },
   "proxy": "http://127.0.0.1:5000/api/",
-  "devDependencies": {}
+  "home": "http://127.0.0.1:3000/"
 }

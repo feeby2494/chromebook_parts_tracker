@@ -4,6 +4,7 @@ import json
 from flask import redirect, Response, request
 from api.data import select_queries
 from api.models.chromebook_inventory import db, Brands, Models, Repairs, Parts, Inventories, Locations
+import urllib.parse
 
 from api.data import sqlite_queries
 # from flask_sqlalchemy import SQLAlchemy
@@ -25,11 +26,7 @@ from api.data import sqlite_queries
 # model_query.get_brands()
 #Importing app from the api package! Different from my ussual methods.
 
-@app.route('/')
-def root():
-    return Response(json.dumps({"message": "I work!"}), mimetype='application/json')
-
-@app.route('/api/chromebook_parts')
+@app.route(f"{os.environ.get('API_ROOT_URL')}/chromebook_parts")
 def get_chromebook_parts():
     with open(os.path.join( app.static_folder, 'json/', 'chromebook_parts.json'), 'r') as json_file:
         data = json.load(json_file)
@@ -41,7 +38,7 @@ def get_chromebook_parts():
 #     data = {"name": "Hi"}
 #     return Response(json.dumps(data), mimetype='application/json')
 #
-@app.route('/api/rebuild_json')
+@app.route(f"{os.environ.get('API_ROOT_URL')}/rebuild_json")
 def rebuild_json():
     if 'chromebook_parts_dynamic.json' in os.listdir(os.path.join( app.static_folder, 'json/')):
         print("{} exists".format('chromebook_parts_dynamic.json'))
@@ -59,7 +56,7 @@ def rebuild_json():
 #     data = {"name": "Hi"}
 #     return Response(json.dumps(data), mimetype='application/json')
 
-@app.route('/api/get_brands', methods = ['GET', 'POST', 'DELETE'])
+@app.route(f"{os.environ.get('API_ROOT_URL')}/get_brands", methods = ['GET', 'POST', 'DELETE'])
 def get_brands():
     def get_brands_json():
         brands = []
@@ -91,8 +88,21 @@ def get_brands():
         brands = get_brands_json()
         return Response(json.dumps({"brands": brands}), mimetype='application/json')
 
+@app.route(f"{os.environ.get('API_ROOT_URL')}/resolve_model_from_part_number/<part_number>", methods = ['GET'])
+def get_model_from_part(part_number):
 
-@app.route('/api/get_models/<brand_name>', methods = ['GET', 'POST', 'DELETE'])
+    # Need to look up part_number by given part Number
+    part_object = db.session.query(Parts).filter_by(part_number=part_number).first()
+
+    # Get the model_id (should be ForeignKey) from this queary
+    model_id = part_object.model_id
+
+    # Look up model name using model id
+    model_name = db.session.query(Models).filter_by(model_id=model_id).first().model_name
+    return Response(json.dumps({"model_name": model_name}), mimetype='application/json')
+
+
+@app.route(f"{os.environ.get('API_ROOT_URL')}/get_models/<brand_name>", methods = ['GET', 'POST', 'DELETE'])
 def get_models(brand_name):
     def get_brand_id():
         brand_id = db.session.query(Brands).filter_by(brand_name=brand_name).first().brand_id
@@ -139,7 +149,7 @@ def get_models(brand_name):
         models = get_models_json(brand_id)
         return Response(json.dumps({"models": models}), mimetype='application/json')
 
-@app.route('/api/get_repairs/<model_name>', methods = ['GET', 'POST', 'DELETE'])
+@app.route(f"{os.environ.get('API_ROOT_URL')}/get_repairs/<model_name>", methods = ['GET', 'POST', 'DELETE'])
 def get_repairs(model_name):
 
     def get_model_id():
@@ -181,7 +191,7 @@ def get_repairs(model_name):
         repairs = get_repairs_json(model_id)
         return Response(json.dumps(repairs), mimetype='application/json')
 
-@app.route('/api/get_parts/<repair_type>', methods = ['GET', 'POST', 'DELETE'])
+@app.route(f"{os.environ.get('API_ROOT_URL')}/get_parts/<repair_type>", methods = ['GET', 'POST', 'DELETE'])
 def get_parts(repair_type):
     def get_repair_id():
         repair_id = db.session.query(Repairs).filter_by(repair_type=repair_type).first().repair_id
@@ -239,7 +249,7 @@ def get_parts(repair_type):
         db.session.commit()
 
 
-@app.route('/api/get_inventory/<part_number>', methods = ['GET', 'POST', 'PUT', 'DELETE'])
+@app.route(f"{os.environ.get('API_ROOT_URL')}/get_inventory/<part_number>", methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def get_inventory(part_number):
     def get_location_id(part_id):
         location_ids = []
@@ -263,7 +273,7 @@ def get_inventory(part_number):
         part_id = db.session.query(Parts).filter_by(part_number=part_number).first().part_id
         return part_id
 
-    if request.method == 'GET':
+    def get_request_inventory():
         part_id = get_part_id(part_number)
         inventory_object = {}
         locations = get_location_id(part_id)
@@ -276,7 +286,11 @@ def get_inventory(part_number):
             inventory_object[part_number][location] = {}
             inventory_object[part_number][location]['count'] = inventory_by_loc.count
             inventory_object[part_number][location]['location_desc'] = get_location_desc_per_location_id(location)
+        return inventory_object
 
+    if request.method == 'GET':
+
+        inventory_object = get_request_inventory()
 
         return Response(json.dumps(inventory_object), mimetype='application/json')
 
@@ -289,7 +303,9 @@ def get_inventory(part_number):
         db.session.add(new_inventory)
         db.session.commit()
 
-        return Response(json.dumps({"message": "okay"}), mimetype='application/json')
+        inventory_object = get_request_inventory()
+
+        return Response(json.dumps(inventory_object), mimetype='application/json')
 
     # Better to use a put or patch method
     if request.method == 'PUT':
@@ -298,13 +314,41 @@ def get_inventory(part_number):
         location_id_by_name = db.session.query(Locations).filter_by(location_desc=location_desc).first().location_id
         count = request.get_json()["count"]
         current_inventory = db.session.query(Inventories).filter_by(part_id=part_id).first()
-        current_inventory.count = count
-        current_inventory.location_id = location_id_by_name
-        db.session.commit()
+        # Geusing this is a PUT requset: if record exists, then update; if no record found, then create new one.
+        if current_inventory is None:
+            new_inventory = Inventories(count=count, part_id=part_id, location_id=location_id_by_name)
+            db.session.add(new_inventory)
+            db.session.commit()
+        else:
+            current_inventory.count = count
+            current_inventory.location_id = location_id_by_name
+            db.session.commit()
 
-        return Response(json.dumps({"message": "okay"}), mimetype='application/json')
+        inventory_object = get_request_inventory()
 
-@app.route('/api/get_locations/', methods = ['GET', 'POST', 'PATCH'])
+        return Response(json.dumps(inventory_object), mimetype='application/json')
+
+@app.route(f"{os.environ.get('API_ROOT_URL')}/use_part/<part_number>", methods = ['PATCH'])
+def use_part(part_number):
+    # Need to convert the URL encoded string, part_number, to UTF-8, so we can query the DB!
+    part_number = urllib.parse.unquote(part_number)
+
+    if request.method == 'PATCH':
+        part_id = db.session.query(Parts).filter_by(part_number=part_number).first().part_id
+        current_inventory = db.session.query(Inventories).filter_by(part_id=part_id).first()
+        # Geusing this is a PUT requset: if record exists, then update; if no record found, then create new one.
+
+        if current_inventory is not None:
+            if current_inventory.count is 0:
+                return Response(json.dumps({"message": "Count is already zero!"}), mimetype='application/json')
+            current_inventory.count -= 1 # Hope this is right syntax
+            db.session.commit()
+
+
+        return Response(json.dumps(current_inventory), mimetype='application/json')
+    return Response(json.dumps({"message": "Error: could not deduct one from inventory"}), mimetype='application/json')
+
+@app.route(f"{os.environ.get('API_ROOT_URL')}/get_locations/", methods = ['GET', 'POST', 'PATCH'])
 def get_locations():
     if request.method == 'GET':
         locations = db.session.query(Locations).all()
@@ -332,6 +376,20 @@ def get_locations():
         db.session.add(current_locations)
         db.session.commit()
         return Response(json.dumps({"message": f"okay: changed  {old_location_desc} to {location_desc}"}), mimetype='application/json')
+
+@app.route(f"{os.environ.get('API_ROOT_URL')}/inventory_analysis", methods = ['GET', 'POST'])
+def analyse_inventory():
+
+    # Get all inventories that have a count less than 5
+    if request.method == 'GET':
+        pass
+    # Get all inventories that have a certain count or less
+    if request.method == 'POST':
+        pass
+
+    return None
+
+
 
 # class Parts(db.Model):
 #     __tablename__ = "parts"
