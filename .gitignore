@@ -9,6 +9,23 @@
 ./api/api/data
 ./api/api/data/test_db.sqlite
 
+api/api/data/.env
+api/api/data/__pycache__/__init__.cpython-39.pyc
+api/api/data/__pycache__/create_chromebook_inventory_db.cpython-39.pyc
+api/api/data/__pycache__/select_queries.cpython-39.pyc
+api/api/data/__pycache__/sqlite_queries.cpython-39.pyc
+api/api/data/chromebook_inventory.sqlite
+api/api/data/test_db.sqlite
+api/api/migrations/README
+api/api/migrations/__pycache__/env.cpython-39.pyc
+api/api/migrations/alembic.ini
+api/api/migrations/env.py
+api/api/migrations/script.py.mako
+
+#backup
+backup
+
+
 # Pycache
 ./api/api/__pycache__/
 ./api/api/data/__pycache__/

@@ -5,7 +5,7 @@ import { Route, Switch, BrowserRouter} from 'react-router-dom';
 import Navigation from './navigation/Navigation';
 import InventoryManagement from './inventory_management/InventoryManagement';
 import ResolveModelFromPart from './resolve_model_from_part/ResolveModelFromPart';
-
+import ReceiveParts from './receive_parts/ReceiveParts'; 
 // Main React Component
 
 class App extends React.Component {
@@ -35,6 +35,7 @@ class App extends React.Component {
             <Route path="/" exact component={InventoryManagement} />
             <Route path="/inventoryManagement" exact component={InventoryManagement} />
             <Route path="/resolveModelFromPart" exact component={ResolveModelFromPart} />
+            <Route path="/receiveParts" exact component={ReceiveParts} />
 
          </Switch>
        </BrowserRouter>

@@ -1,3 +1,19 @@
+## Future Plans:
+
+1. A place to add parts and inventory to location really fast. A part PUT request, then inventory PUT.
+2. A place to add part to repair's parts backref.
+3. A place to add repairs to part's repair_list.
+4. When a part is added to a repair, but is already in the DB, then it must be
+queried and added to that repair's part backref instead.
+5. A place to see all parts with empty repair_list, then option to select repairs to add.
+6. Analyses page to see all parts with inventories and the repairs for them.
+7. A repairs page with all inventories below 4 or missing inventory.
+8. Logon system
+9. Posgresql or mysql
+10. email alerts when new parts added to inventory.
+
+
+
 ## Set up API first
 
 Before using the front end application we need to set up our backend, which handles our API.
@@ -14,7 +30,7 @@ It's written in python3 using the Flask microframework. The chromebook parts dat
 `pip install -r requirements.txt`
 
 ### Setup your .env files in ./api.api and .api.api/data
-FLASK_DB="<name of database>" //Remember database is included, so this isn't much of a secret! It will be in the future though, when invenory is added!
+FLASK_DB="<name of database>" //Remember database is included, so this isn't much of a secret! It will be in the future though, when inventory is added!
 
 ### Run Flask API on localserver
 `flask run`
