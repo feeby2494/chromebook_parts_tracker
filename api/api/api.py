@@ -1,10 +1,13 @@
 from api import app
 import os
 import json
-from flask import redirect, Response, request
+import csv
+from flask import redirect, Response, request, flash, url_for
+from werkzeug.utils import secure_filename
 from api.data import select_queries
 from api.models.chromebook_inventory import db, Brands, Models, Repairs, Parts, Inventories, Locations, part_repair_association
 import urllib.parse
+import xlrd
 
 from api.data import sqlite_queries
 # from flask_sqlalchemy import SQLAlchemy
@@ -25,6 +28,18 @@ from api.data import sqlite_queries
 
 # model_query.get_brands()
 #Importing app from the api package! Different from my ussual methods.
+
+# Upload Folder Setup
+
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'csv'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route(f"/{os.environ.get('API_ROOT_URL')}/chromebook_parts")
 def get_chromebook_parts():
@@ -545,6 +560,125 @@ def add_part_to_repair_type():
         pass
 
     return None
+
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/uploadInventory", methods = ['GET', 'POST'])
+def uploadInventory():
+
+
+    # Get all inventories that have a count less than 5
+    if request.method == 'GET':
+        pass
+    # Get all inventories that have a certain count or less
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'myFile' not in request.files:
+            return Response(json.dumps({"message": "Error: No File sent"}), mimetype='application/json')
+        # get file from request object
+        file = request.files['myFile']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            print(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            with open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r") as f:
+                lines = csv.reader(f)
+
+                for i, line in enumerate(lines):
+                    if i == 0:
+                        continue
+                    part_number = line[0].strip()
+                    count = line[1].strip()
+                    location = line[2].strip()
+                    part_info = line[3].strip()
+
+                    # Query location and get id
+                    location_query = db.session.query(Locations).filter_by(location_desc=location).first()
+
+                    # new location, so make a new one
+                    if location_query is None:
+                        new_location = Locations(location_desc=location)
+                        db.session.add(new_location)
+                        db.session.commit()
+                        # Query location and get id
+                        location_query = db.session.query(Locations).filter_by(location_desc=location).first()
+                        location_id = location_query.location_id
+                    else:
+                        location_id = location_query.location_id
+
+
+                    # Let's skip this for now:
+                    # Existing Inventory
+                    # inventory at that location and part number exist, then add count to existing inventory
+
+                    # If part_number not is db, make new part_number:
+                    part_query = db.session.query(Parts).filter_by(part_number=part_number).first()
+
+                    if part_query is None:
+                        # add new part
+                        new_part = Parts(part_number=part_number, part_info=part_info)
+                        db.session.add(new_part)
+                        db.session.commit()
+                        part_query = db.session.query(Parts).filter_by(part_number=part_number).first()
+                        part_id = part_query.part_id
+                    else:
+                        part_id = part_query.part_id
+
+                    # Add new inventory
+                    new_inventory = Inventories(count=count, part_id=part_id, location_id=location_id)
+                    db.session.add(new_inventory)
+                    db.session.commit()
+
+            # file_extension = os.path.splitext(file.filename)[1]
+            # if file_extension == "csv":
+            #
+            # else:
+            #     # Program to extract a particular row value
+            #
+            #     loc = ("path of file")
+            #
+            #     wb = xlrd.open_workbook(loc)
+            #     sheet = wb.sheet_by_index(0)
+            #
+            #     sheet.cell_value(0, 0)
+            #
+            #     for row in sheet:
+            #         print(sheet.row_values(row))
+        else:
+            return Response(json.dumps({"message": "File extention not allowed for upload to this server"}), mimetype='application/json')
+
+
+    return Response(json.dumps({"message": "File sent!"}), mimetype='application/json')
+
+
+# @app.route('/', methods=['GET', 'POST'])
+# def upload_file():
+#     if request.method == 'POST':
+#         # check if the post request has the file part
+#         if 'file' not in request.files:
+#             flash('No file part')
+#             return redirect(request.url)
+#         file = request.files['file']
+#         # If the user does not select a file, the browser submits an
+#         # empty file without a filename.
+#         if file.filename == '':
+#             flash('No selected file')
+#             return redirect(request.url)
+#         if file and allowed_file(file.filename):
+#             filename = secure_filename(file.filename)
+#             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+#             return redirect(url_for('download_file', name=filename))
+#     return '''
+#     <!doctype html>
+#     <title>Upload new File</title>
+#     <h1>Upload new File</h1>
+#     <form method=post enctype=multipart/form-data>
+#       <input type=file name=file>
+#       <input type=submit value=Upload>
+#     </form>
+#     '''
+
+
+
 
 
 # class Parts(db.Model):
