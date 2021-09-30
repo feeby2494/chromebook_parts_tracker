@@ -277,7 +277,9 @@ class InventoryManagement extends React.Component {
         })
       }, () => {
         this.setState({
-          current_parts: this.state.parts
+          current_parts: this.state.parts,
+          newPartNumber: "",
+          newPartInfo: ""
         });
       });
     })
