@@ -581,6 +581,9 @@ class InventoryManagement extends React.Component {
 
   submitPostPart(event) {
     this.postPart(this.state.current_repair);
+    // Clear input fields
+    document.getElementById('input-part-number').value = "";
+    document.getElementById('part-info').value = "";
   }
 
 handleShowAddInventory(event) {
