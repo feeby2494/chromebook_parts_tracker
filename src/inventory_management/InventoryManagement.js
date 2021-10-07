@@ -863,9 +863,9 @@ handleShowAddInventory(event) {
                                     <Form.Control as="select" id="select-part_name" onChange={this.handleCurrentPartSelected}>
                                       <option value="" selected disabled hidden>Choose here</option>
                                       {
-                                            Object.keys(this.state.parts).map((part) => {
-                                              return <option value={part}>{part}</option>
-                                            })
+                                        this.state.parts.map((part) => {
+                                          return <option value={part["part_number"]}>{part["part_number"]}</option>
+                                        })
                                       }
                                     </Form.Control>
                                     <Form.Label> Location of inventory </Form.Label>
@@ -901,9 +901,9 @@ handleShowAddInventory(event) {
                                     <Form.Control as="select" id="select-part_name" onChange={this.handleCurrentPartSelected}>
                                       <option value="" selected disabled hidden>Choose here</option>
                                       {
-                                            this.state.parts.map((part) => {
-                                              return <option value={part}>{part}</option>
-                                            })
+                                        this.state.parts.map((part) => {
+                                          return <option value={part["part_number"]}>{part["part_number"]}</option>
+                                        })
                                       }
                                     </Form.Control>
                                     <Form.Label> New Location of inventory </Form.Label>
