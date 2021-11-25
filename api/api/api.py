@@ -481,10 +481,11 @@ def analyse_inventory():
 
     return None
 
-@app.route(f"/{os.environ.get('API_ROOT_URL')}/receive_parts/<part_number>", methods = ['GET', 'POST'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/receive_parts/<path:part_number>", methods = ['GET', 'POST'])
 def receive_parts(part_number):
     # Need to convert the URL encoded string, part_number, to UTF-8, so we can query the DB!
-    part_number = urllib.parse.unquote(part_number)
+    part_number = urllib.parse.unquote(urllib.parse.unquote(part_number))
+    print(part_number)
 
     if request.method == 'GET':
         pass

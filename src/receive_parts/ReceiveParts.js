@@ -38,7 +38,7 @@ class ReceiveParts extends React.Component {
 
   submitPartInventory() {
 
-    fetch(`${process.env.REACT_APP_API_URL}/receive_parts/${this.state.partNumber}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/receive_parts/${encodeURIComponent(this.state.partNumber)}`, {
       mode: 'cors',
       method: "POST",
       body: JSON.stringify(
