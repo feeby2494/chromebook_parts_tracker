@@ -8,6 +8,7 @@ from api.data import select_queries
 from api.models.chromebook_inventory import db, Brands, Models, Repairs, Parts, Inventories, Locations, part_repair_association
 import urllib.parse
 import xlrd
+from api.emails import generate, send
 
 from api.data import sqlite_queries
 # from flask_sqlalchemy import SQLAlchemy
@@ -544,6 +545,14 @@ def receive_parts(part_number):
         parts_object["part_number"] = part_number
         parts_object["part_info"] = part_info
         parts_object["part_id"] = part_id
+
+        # Send email notifing of new parts recieved into inventory:
+        sender = "toby2494.development@gmail.com"
+        recipients = ["toby2494@gmail.com", "jlynn@agirepairtx.com", "lcenteno@agirepairtx.com", "trenfro@agirepairtx.com"]
+        for recipient in recipients:
+            recieved_new_stock_email = generate(sender, recipient,f"Received {count} of {part_number} in {location_desc}", f"{part_number} has recently been stocked. \n \n Count: {count} \n Location: {location_desc} ", None)
+            send(sender, recieved_new_stock_email, recipient)
+
 
         # Return new part object and inventory object
         return Response(json.dumps([parts_object, inventory_object]), mimetype='application/json')
