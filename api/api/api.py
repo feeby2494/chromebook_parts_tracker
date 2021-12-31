@@ -8,9 +8,22 @@ from api.data import select_queries
 from api.models.chromebook_inventory import db, Brands, Models, Repairs, Parts, Inventories, Locations, part_repair_association
 import urllib.parse
 import xlrd
-from api.emails import generate, send
-
+from api.emails import generate_then_send
 from api.data import sqlite_queries
+
+
+
+# @async
+# def send_async_email(app, msg):
+#     with app.app_context():
+#         mail.send(msg)
+#
+# def send_email(subject, sender, recipients, text_body, html_body):
+#     msg = Message(subject, sender=sender, recipients=recipients)
+#     msg.body = text_body
+#     msg.html = html_body
+#     send_async_email(app, msg)
+
 # from flask_sqlalchemy import SQLAlchemy
 #
 #
@@ -550,8 +563,7 @@ def receive_parts(part_number):
         sender = "toby2494.development@gmail.com"
         recipients = ["toby2494@gmail.com", "jlynn@agirepairtx.com", "lcenteno@agirepairtx.com", "trenfro@agirepairtx.com"]
         for recipient in recipients:
-            recieved_new_stock_email = generate(sender, recipient,f"Received {count} of {part_number} in {location_desc}", f"{part_number} has recently been stocked. \n \n Count: {count} \n Location: {location_desc} ", None)
-            send(sender, recieved_new_stock_email, recipient)
+            generate_then_send(app, sender, recipient,f"Received {count} of {part_number} in {location_desc}", f"{part_number} has recently been stocked. \n \n Count: {count} \n Location: {location_desc} ", None)
 
 
         # Return new part object and inventory object

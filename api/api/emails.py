@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from api import app
 
 import email.message
 import mimetypes
@@ -6,7 +7,23 @@ import os
 import smtplib
 import ssl
 
-def generate(sender, recipient, subject, body, attachment_path):
+from api.decorators import asyncThread
+
+@asyncThread
+def send(app, sender, message, recipient):
+  with app.app_context():
+      # Create a secure SSL context
+      #context = ssl.create_default_context()
+      """Sends the message to the configured SMTP server."""
+      #mail_server = smtplib.SMTP('smtp.gmail.com',587)
+      #mail_server.starttls(context=context)
+      mail_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+
+      mail_server.login(sender, os.environ.get('WEB_APP_GMAIL_PASSWORD'))
+      mail_server.sendmail(str(sender), str(recipient), str(message))
+      mail_server.quit()
+
+def generate_then_send(app, sender, recipient, subject, body, attachment_path):
   """Creates an email with an attachement."""
   # Basic Email formatting
   message = email.message.EmailMessage()
@@ -27,16 +44,4 @@ def generate(sender, recipient, subject, body, attachment_path):
                               subtype=mime_subtype,
                               filename=attachment_filename)
 
-  return message
-
-def send(sender, message, recipient):
-  # Create a secure SSL context
-  #context = ssl.create_default_context()
-  """Sends the message to the configured SMTP server."""
-  #mail_server = smtplib.SMTP('smtp.gmail.com',587)
-  #mail_server.starttls(context=context)
-  mail_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-
-  mail_server.login(sender, os.environ.get('WEB_APP_GMAIL_PASSWORD'))
-  mail_server.sendmail(str(sender), str(recipient), str(message))
-  mail_server.quit()
+  send(app, sender, message, recipient)
