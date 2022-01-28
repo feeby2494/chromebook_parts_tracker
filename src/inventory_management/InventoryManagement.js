@@ -287,6 +287,8 @@ class InventoryManagement extends React.Component {
   }
 
   fetchInventories(part) {
+    // Need to url encode the part var first
+    part = encodeURI(part);
     fetch(`${process.env.REACT_APP_API_URL}/get_inventory/${part}`, {
       mode: 'cors',
       headers: {

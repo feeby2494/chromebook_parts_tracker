@@ -13,7 +13,7 @@ class ResolveModelFromPart extends React.Component {
     super(props);
     this.state = {
       partInput : '',
-      resolvedModel : null
+      resolvedRepairs: null
     }
     this.handlePartInput = this.handlePartInput.bind(this);
     this.resolveToModel = this.resolveToModel.bind(this);
@@ -38,7 +38,7 @@ class ResolveModelFromPart extends React.Component {
     .then(response => response.json())
     .then((data) => {
       this.setState({
-        resolvedModel: data.model_name
+        resolvedRepairs: data.repairs
       })
     })
     .catch(err => console.log(err));
@@ -58,7 +58,7 @@ class ResolveModelFromPart extends React.Component {
                     <Form.Control as="input" id="input-part-number" onChange={this.handlePartInput}>
 
                     </Form.Control>
-                    <Button className="mt-3" onClick={this.resolveToModel} variant="success">Resolve To Model</Button>
+                    <Button className="mt-3" onClick={this.resolveToModel} variant="success">Resolve To Repair</Button>
                   </Form>
                 </Card.Body>
               </Card>
@@ -67,9 +67,15 @@ class ResolveModelFromPart extends React.Component {
           <Row className="mt-5">
             <Col sm={12} align="center">
               <Card>
-                <Card.Header><h2>Model : </h2></Card.Header>
+                <Card.Header><h2>Repair Types Associated with this Part Number : </h2></Card.Header>
                 <Card.Body>
-                  <h3>{this.state.resolvedModel}</h3>
+                  { this.state.resolvedRepairs &&
+                    
+                    this.state.resolvedRepairs.map((repair) => {
+                      return (<h3>{repair.name}</h3>);
+                    })
+                  }
+                  
                 </Card.Body>
               </Card>
             </Col>

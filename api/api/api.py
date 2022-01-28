@@ -120,16 +120,30 @@ def get_brands():
 @app.route(f"/{os.environ.get('API_ROOT_URL')}/resolve_model_from_part_number/<part_number>", methods = ['GET'])
 def get_model_from_part(part_number):
 
-    # Need to look up part_number by given part Number
-    # Using like will make this match more parts
-    part_object = db.session.query(Parts).filter_by(part_number.like(f'%{part_number.upper()}%')).first()
+    # for association in repair.parts:
+    #         parts_for_repair[association.part_number] = {}
+    #         parts_for_repair[association.part_number]['part_number'] = association.part_number
+    #         parts_for_repair[association.part_number]["model_id"] = association.model_id
+    #         parts_for_repair[association.part_number]["part_id"] = association.part_id
+    #         if association.part_info:
+    #             parts_for_repair[association.part_number]["part_info"] = association.part_info
 
-    # Get the model_id (should be ForeignKey) from this queary
-    model_id = part_object.model_id
+    repairs_for_this_part = []
 
-    # Look up model name using model id
-    model_name = db.session.query(Models).filter_by(model_id=model_id).first().model_name
-    return Response(json.dumps({"model_name": model_name}), mimetype='application/json')
+    # Need part_id to look up part_repair_association table
+    part = db.session.query(Parts).filter_by(part_number = part_number).first()
+    if part:
+        for association in part.repair_list:
+            repair_id = association.repair_id
+            repair_query = db.session.query(Repairs).filter_by(repair_id = repair_id).first()
+            if repair_query:
+                repair_name = repair_query.repair_type
+                repair_object = {}
+                repair_object['name'] = repair_name
+                repair_object['id'] = repair_id
+                repairs_for_this_part.append(repair_object)
+    
+    return Response(json.dumps({"repairs": repairs_for_this_part}), mimetype='application/json')
 
 
 @app.route(f"/{os.environ.get('API_ROOT_URL')}/get_models/<brand_name>", methods = ['GET', 'POST', 'DELETE'])
