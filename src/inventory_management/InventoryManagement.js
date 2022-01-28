@@ -374,6 +374,8 @@ class InventoryManagement extends React.Component {
     console.log(`Added Inventory: ${this.state.newInventory}`)
     // this.clearOutInventories();
 
+    part = encodeURI(part);
+
     fetch(`${process.env.REACT_APP_API_URL}/get_inventory/${part}`, {
       mode: 'cors',
       method: "PUT",
