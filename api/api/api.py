@@ -363,11 +363,12 @@ def get_parts(repair_type):
         db.session.commit()
 
 
-@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_inventory/<part_number>", methods = ['GET', 'POST', 'PUT', 'DELETE'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/get_inventory/<path:part_number>", methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def get_inventory(part_number):
 
     # URL decode model_name first:
-    part_number = urllib.parse.unquote(part_number)
+    part_number = urllib.parse.unquote_plus(part_number)
+    print(part_number)
 
     def get_location_id(part_id):
         location_ids = []
