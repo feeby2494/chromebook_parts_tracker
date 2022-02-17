@@ -27,7 +27,7 @@ class ResolveModelFromPart extends React.Component {
 
   resolveToModel() {
 
-    fetch(`${process.env.REACT_APP_API_URL}/resolve_model_from_part_number/${this.state.partInput}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/resolve_model_from_part_number/${encodeURIComponent(this.state.partInput)}`, {
       mode: 'cors',
       method: "GET",
       headers: {

@@ -117,8 +117,12 @@ def get_brands():
         brands = get_brands_json()
         return Response(json.dumps({"brands": brands}), mimetype='application/json')
 
-@app.route(f"/{os.environ.get('API_ROOT_URL')}/resolve_model_from_part_number/<part_number>", methods = ['GET'])
+@app.route(f"/{os.environ.get('API_ROOT_URL')}/resolve_model_from_part_number/<path:part_number>", methods = ['GET'])
 def get_model_from_part(part_number):
+
+    # URL decode part_number first:
+    part_number = urllib.parse.unquote(part_number)
+    print(part_number)
 
     # for association in repair.parts:
     #         parts_for_repair[association.part_number] = {}
