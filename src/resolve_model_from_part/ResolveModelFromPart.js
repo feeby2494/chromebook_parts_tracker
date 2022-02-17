@@ -21,7 +21,7 @@ class ResolveModelFromPart extends React.Component {
 
   handlePartInput(event) {
     this.setState({
-      partInput : event.target.value
+      partInput : event.target.value.trim()
     });
   }
 
