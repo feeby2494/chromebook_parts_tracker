@@ -1,17 +1,9 @@
-from api import app
+import os
+from api import app, db, migrate
 from flask_sqlalchemy  import SQLAlchemy
 # from sqlalchemy.ext.automap import automap_base
-import os
 
-# Need a way to update DB through flask-migrate
-# from flask_script import Manager
-from flask_migrate import Migrate
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('FLASK_DB')
-db = SQLAlchemy(app)
-
-# init Migrate
-migrate = Migrate(app, db, render_as_batch=True)
 # manager = Manager(app)
 #
 # manager.add_command('db', MigrateCommand)

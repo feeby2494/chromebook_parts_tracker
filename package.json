@@ -19,7 +19,7 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "api": "cd api && cd api && source ./venv/bin/activate && flask run",
+    "api": "cd api && sudo source ./venv/bin/activate",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
