@@ -21,13 +21,13 @@ class ResolveModelFromPart extends React.Component {
 
   handlePartInput(event) {
     this.setState({
-      partInput : event.target.value
+      partInput : event.target.value.trim()
     });
   }
 
   resolveToModel() {
 
-    fetch(`${process.env.REACT_APP_API_URL}/resolve_model_from_part_number/${this.state.partInput}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/resolve_model_from_part_number/${encodeURIComponent(this.state.partInput)}`, {
       mode: 'cors',
       method: "GET",
       headers: {
