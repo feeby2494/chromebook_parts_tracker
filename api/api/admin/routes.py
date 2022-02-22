@@ -1,6 +1,6 @@
 import os
 from api import app, db, bcrypt
-from models import User
+from .models import Users
 
 @app.route(f"/{os.environ.get('API_ROOT_URL')}/admin/login")
 def login():
@@ -11,5 +11,5 @@ def logout():
     pass
 
 @app.route(f"/{os.environ.get('API_ROOT_URL')}/admin/register")
-def logout():
+def register():
     pass
