@@ -39,6 +39,7 @@ print(sys.path)
 # Importing API and View modules
 import api.api
 import api.admin.routes
+import api.token.routes
 
 if __name__ == '__main__':
     app.run(debug=True)
