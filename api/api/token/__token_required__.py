@@ -1,5 +1,7 @@
 from functools import wraps
 from flask import request, Response
+from api import app
+from api.user.models import Users
 import jwt
 import json
 
@@ -28,8 +30,8 @@ def token_required(f):
         try:
             #pyJwt has changed since the tortoral from PrettyPrinted: algorithms=["HS256"] must be passed as an argument to jwt.decode; change "HS256" to what algorithm yiu sued to encode your jwt
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
-
-            current_user = User.query.filter_by(public_id=data['public_id']).first()
+            current_user = Users.query.filter_by(public_id=data['public_id']).first()
+            
         except:
 
             return Response(json.dumps({'message' : 'Token is invalid'}), mimetype='application/json'), 401

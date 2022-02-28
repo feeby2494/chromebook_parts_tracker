@@ -22,6 +22,7 @@ load_dotenv()
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('FLASK_DB')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 db = SQLAlchemy(app)
 
@@ -38,7 +39,7 @@ print(sys.path)
 
 # Importing API and View modules
 import api.api
-import api.admin.routes
+import api.user.routes
 import api.token.routes
 
 if __name__ == '__main__':
