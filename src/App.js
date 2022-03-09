@@ -2,46 +2,46 @@ import './App.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Route, Switch, BrowserRouter} from 'react-router-dom';
+import withAuth from './hoc/withAuth';
+import Login from './login/Login';
 import Navigation from './navigation/Navigation';
 import InventoryManagement from './inventory_management/InventoryManagement';
 import ResolveModelFromPart from './resolve_model_from_part/ResolveModelFromPart';
 import ReceiveParts from './receive_parts/ReceiveParts'; 
+import useToken from './useToken';
 // Main React Component
 
-class App extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
+const App= (props) => {
+  // const { token, setToken } = useToken();
 
-    }
+  // if(!token) {
+  //   return <Login setToken={setToken} />
+  // }
 
-  }
+  
 
-  //                         METHODS
-
-
-  render(){
-
-
-    return (
-      <div className="App">
-        <BrowserRouter>
-          <Navigation />
+  return (
+    <div className="App">
+      <BrowserRouter>
+        <Navigation />
 
 
-          {/* Switch and router will go here  */}
+        {/* Switch and router will go here  */}
+        
+        <Switch>
+          <Route path="/" exact component={withAuth(InventoryManagement)} />
+          <Route path="/login" >
+            <Login  history={props.history}/>
+          </Route>
+          <Route path="/inventoryManagement" exact component={withAuth(InventoryManagement)} />
+          <Route path="/resolveModelFromPart" exact component={withAuth(ResolveModelFromPart)} />
+          <Route path="/receiveParts" exact component={withAuth(ReceiveParts)} />
 
-          <Switch>
-            <Route path="/" exact component={InventoryManagement} />
-            <Route path="/inventoryManagement" exact component={InventoryManagement} />
-            <Route path="/resolveModelFromPart" exact component={ResolveModelFromPart} />
-            <Route path="/receiveParts" exact component={ReceiveParts} />
-
-         </Switch>
-       </BrowserRouter>
-      </div>
-    );
-  }
+        </Switch>
+      </BrowserRouter>
+    </div>
+  );
+  
 }
 
 export default App;

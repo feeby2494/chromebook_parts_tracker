@@ -19,7 +19,8 @@ class ReceiveParts extends React.Component {
       partCount : '',
       partLocation: '',
       partAdded: '',
-      selectedFile: null
+      selectedFile: null,
+      errorPartInput: null
     }
     this.handlePartInput = this.handlePartInput.bind(this);
     this.submitPartInventory = this.submitPartInventory.bind(this);
@@ -60,7 +61,12 @@ class ReceiveParts extends React.Component {
         inventory: data.current_inventory
       })
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err)
+      this.setState({
+        errorPartInput: `Error: ${err}`
+      });
+    });
   }
 
   onFileChange(event) {
@@ -147,6 +153,10 @@ class ReceiveParts extends React.Component {
                       </Col>
                     </Form.Row>
                     <Button className="mt-3" onClick={this.submitPartInventory} variant="success">Submit Part</Button>
+                      {(
+                        this.state.errorPartInput && 
+                        <p class="text-danger">{this.state.errorPartInput}</p>
+                      )}
                   </Form>
                 </Card.Body>
               </Card>

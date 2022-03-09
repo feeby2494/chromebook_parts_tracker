@@ -13,7 +13,8 @@ class ResolveModelFromPart extends React.Component {
     super(props);
     this.state = {
       partInput : '',
-      resolvedRepairs: null
+      resolvedRepairs: null,
+      message: null
     }
     this.handlePartInput = this.handlePartInput.bind(this);
     this.resolveToModel = this.resolveToModel.bind(this);
@@ -41,7 +42,12 @@ class ResolveModelFromPart extends React.Component {
         resolvedRepairs: data.repairs
       })
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err)
+      this.state.setState({
+        error: `Error: ${err}` 
+      });
+    });
   }
 
   render () {

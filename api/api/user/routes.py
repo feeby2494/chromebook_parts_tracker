@@ -6,6 +6,7 @@ from .models import Users
 from api.token.__token_required__ import token_required
 import uuid
 from sqlalchemy import exc
+from flask_cors import CORS
 
 
 ################################################################################################################
@@ -134,7 +135,6 @@ def delete_user(current_user, public_id):
     """
         Used to delete a specific user; only admin users can do this.
     """
-
     if not current_user.admin:
         return Response(json.dumps({'message' : 'Cannot perform this action. You are not an Admin'}), mimetype='application/json')
 

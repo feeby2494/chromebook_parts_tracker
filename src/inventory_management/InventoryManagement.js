@@ -114,7 +114,8 @@ class InventoryManagement extends React.Component {
     fetch(`${process.env.REACT_APP_API_URL}/get_brands`, {
       mode: 'cors',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-access-token': sessionStorage.getItem('token')
       }
     })
     .then(response => response.json())
@@ -135,7 +136,8 @@ class InventoryManagement extends React.Component {
       body: JSON.stringify({"brand_name" : this.state.newBrandName}),
       headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-access-token': sessionStorage.getItem('token')
       }
     })
     .then(response => response.json())
@@ -152,7 +154,8 @@ class InventoryManagement extends React.Component {
     fetch(`${process.env.REACT_APP_API_URL}/get_models/${brand}`, {
       mode: 'cors',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-access-token': sessionStorage.getItem('token')
       }
     })
     .then(response => response.json())
@@ -174,7 +177,8 @@ class InventoryManagement extends React.Component {
       body: JSON.stringify({"model_name" : this.state.newModelName}),
       headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-access-token': sessionStorage.getItem('token')
       }
     })
     .then(response => response.json())
@@ -192,7 +196,8 @@ class InventoryManagement extends React.Component {
     fetch(`${process.env.REACT_APP_API_URL}/get_repairs/${model}`, {
       mode: 'cors',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-access-token': sessionStorage.getItem('token')
       }
     })
     .then(response => response.json())
@@ -214,7 +219,8 @@ class InventoryManagement extends React.Component {
       body: JSON.stringify({"repair_type" : this.state.newRepairType, "repair_area": this.state.newRepairArea}),
       headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-access-token': sessionStorage.getItem('token')
       }
     })
     .then(response => response.json())
@@ -232,7 +238,8 @@ class InventoryManagement extends React.Component {
     fetch(`${process.env.REACT_APP_API_URL}/get_parts/${repair}`, {
       mode: 'cors',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-access-token': sessionStorage.getItem('token')
       }
     })
     .then(response => response.json())
@@ -263,7 +270,8 @@ class InventoryManagement extends React.Component {
       body: JSON.stringify({"part_number" : this.state.newPartNumber, "part_info" : this.state.newPartInfo}),
       headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-access-token': sessionStorage.getItem('token')
       }
     })
     .then(response => response.json())
@@ -292,7 +300,8 @@ class InventoryManagement extends React.Component {
     fetch(`${process.env.REACT_APP_API_URL}/get_inventory/${part}`, {
       mode: 'cors',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-access-token': sessionStorage.getItem('token')
       }
     })
     .then(response => response.json())
@@ -336,7 +345,8 @@ class InventoryManagement extends React.Component {
       body: JSON.stringify({"count" : this.state.current_count, "location_desc" : this.state.current_location}),
       headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-access-token': sessionStorage.getItem('token')
       }
     })
     .then(response => response.json())
@@ -382,7 +392,8 @@ class InventoryManagement extends React.Component {
       body: JSON.stringify({"count" : this.state.current_count, "location_desc" : this.state.current_location}),
       headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-access-token': sessionStorage.getItem('token')
       }
     })
     .then(response => response.json())
@@ -416,7 +427,8 @@ class InventoryManagement extends React.Component {
       body: JSON.stringify({"part_number" : part}),
       headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-access-token': sessionStorage.getItem('token')
       }
     })
     .then(response => response.json())
@@ -443,7 +455,8 @@ class InventoryManagement extends React.Component {
     fetch(`${process.env.REACT_APP_API_URL}/get_locations/`, {
         mode: 'cors',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'x-access-token': sessionStorage.getItem('token')
         }
       })
       .then(response => response.json())
