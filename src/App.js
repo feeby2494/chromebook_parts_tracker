@@ -8,6 +8,7 @@ import Navigation from './navigation/Navigation';
 import InventoryManagement from './inventory_management/InventoryManagement';
 import ResolveModelFromPart from './resolve_model_from_part/ResolveModelFromPart';
 import ReceiveParts from './receive_parts/ReceiveParts'; 
+import Register from './register/Register';
 import useToken from './useToken';
 // Main React Component
 
@@ -36,6 +37,9 @@ const App= (props) => {
           <Route path="/inventoryManagement" exact component={withAuth(InventoryManagement)} />
           <Route path="/resolveModelFromPart" exact component={withAuth(ResolveModelFromPart)} />
           <Route path="/receiveParts" exact component={withAuth(ReceiveParts)} />
+          <Route path="/register"> 
+            <Register history={props.history}/>
+          </Route>
 
         </Switch>
       </BrowserRouter>

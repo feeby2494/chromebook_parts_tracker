@@ -24,7 +24,7 @@ class Navigation extends React.Component {
               <NavDropdown.Divider />
 
             </NavDropdown>
-
+            <Nav.Link href="/register">Register New User</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

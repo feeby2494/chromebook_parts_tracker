@@ -10,7 +10,7 @@ import urllib.parse
 import xlrd
 from api.emails import generate_then_send
 from api.data import sqlite_queries
-from api.token.__token_required__ import token_required
+from api.jwt_token.__token_required__ import token_required
 
 
 

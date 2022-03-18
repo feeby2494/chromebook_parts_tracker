@@ -546,7 +546,7 @@ class InventoryManagement extends React.Component {
 
   handleNewRepairType(event){
     this.setState({
-      newRepairType: event.target.value.trim()
+      newRepairType: this.state.current_model_name + '-' + event.target.value.trim()
     });
   }
 
@@ -682,7 +682,7 @@ handleShowAddInventory(event) {
                           <Card>
                             <Card.Body>
                               <Form.Label> Add a New Brand </Form.Label>
-                              <Form.Control as="input" id="input-model" onChange={this.handlePostBrand}>
+                              <Form.Control as="input" id="input-add-brand" onChange={this.handlePostBrand}>
 
                               </Form.Control>
                               <Button onClick={this.submitPostBrand} variant="success">Add</Button>
@@ -710,7 +710,7 @@ handleShowAddInventory(event) {
                                 <Card>
                                   <Card.Body>
                                     <Form.Label> New Model Name </Form.Label>
-                                    <Form.Control as="input" id="input-model" onChange={this.handlePostModel}>
+                                    <Form.Control as="input" id="input-model" placeholder="format:<Model Name>-<Screen Size>-<Model Number> EX: Macbook-Air-13-A1466" onChange={this.handlePostModel}>
 
                                     </Form.Control>
                                     <Button onClick={this.submitPostModel} variant="success">Add</Button>
@@ -750,7 +750,7 @@ handleShowAddInventory(event) {
                                       <option value="Display Assembly">Display Assembly</option>
                                     </Form.Control>
                                     <Form.Label> New Repair Type </Form.Label>
-                                    <Form.Control as="input" id="select-repair-type" onChange={this.handleNewRepairType}>
+                                    <Form.Control as="input" id="select-repair-type" placeholder="Do not include model, year, or model number; just part name" onChange={this.handleNewRepairType}>
 
                                     </Form.Control>
                                     <Button onClick={this.submitPostRepair} variant="success">Add</Button>

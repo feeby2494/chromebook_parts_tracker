@@ -3,7 +3,7 @@ import json
 from api import app, db, bcrypt
 from flask import redirect, Response, request, flash, url_for
 from .models import Users
-from api.token.__token_required__ import token_required
+from api.jwt_token.__token_required__ import token_required
 import uuid
 from sqlalchemy import exc
 from flask_cors import CORS
@@ -87,25 +87,27 @@ def create_user():
         db.session.rollback()
         return Response(json.dumps({'message' : f'ERROR: Cannot create user: {data["username"]}. Due to ERROR: {e}'}), mimetype='application/json')
 
-# @app.route('/api/register', methods=['POST'])
-# def self_register():
-#     data = request.get_json()
-#     password = data['password']
-#     username = data['username']
-#     username = data['email']
+@app.route('/api/user/register', methods=['POST'])
+def self_register():
 
-#     hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256', salt_length=10)
+    data = request.get_json()
+    print(data)
 
-#     try:
-#         new_user = User(public_id=str(uuid.uuid4()), username=data['username'], email=data['email'], password=hashed_password, admin=False)
-#         db.session.add(new_user)
-#         db.session.commit()
+    try:
+        new_user = Users(public_id=str(uuid.uuid4()), username=data['username'], name = data['name'], email=data['email'], password=data['password'], admin=False)
+        db.session.add(new_user)
+        db.session.commit()
 
-#         return Response(json.dumps({'message' : f'New user, {username}, created'}), mimetype='application/json')
-#     except exc.IntegrityError as e:
-#         db.session.rollback()
-#         return Response(json.dumps({'message' : f'ERROR: Cannot create user: {username}. Due to ERROR: {e}'}), mimetype='application/json')
+        user = Users.query.filter_by(username=data['username']).first()
 
+        if bcrypt.check_password_hash(user.password, data['password']):
+            token = user.encode_auth_token( user.public_id )
+            return Response(json.dumps({'token' : token }), mimetype='application/json')
+
+        return Response(json.dumps({'message' : f'New user, {data["username"]}, created'}), mimetype='application/json')
+    except exc.IntegrityError as e:
+        db.session.rollback()
+        return Response(json.dumps({'message' : f'ERROR: Cannot create user: {data["username"]}. Due to ERROR: {e}'}), mimetype='application/json')
 
 
 @app.route(f"/{os.environ.get('API_ROOT_URL')}/user/<public_id>", methods=['PUT'])
