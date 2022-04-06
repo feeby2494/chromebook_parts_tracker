@@ -418,8 +418,10 @@ class InventoryManagement extends React.Component {
 
 
 // This was working perfect awhile ago, so have no clue.
-  useOnePart(part, location) {
+  useOnePart(part) {
     console.log(`changed inventory by one: ${this.state.newInventory}`)
+
+    part = encodeURI(part);
 
     fetch(`${process.env.REACT_APP_API_URL}/use_part/${part}`, {
       mode: 'cors',
@@ -441,15 +443,31 @@ class InventoryManagement extends React.Component {
           inventory_state.push(data);
           console.log(inventory_state)
           this.setState({
-              inventories: inventory_state
+            inventories: inventory_state
           }, () => {
             this.setState({
                 current_inventories: this.state.inventories
             });
           });
+          
       }
     });
   }
+
+
+  // handleParts(event){
+  //   event.preventDefault();
+  //   this.setState({
+  //     current_parts: this.state.parts,
+  //     current_inventories: [],
+  //     inventories: []
+  //   }, () => {
+  //       // Need to handle inventories:
+  //       this.state.current_parts.map((part) => {
+  //         this.fetchInventories(part.part_number);
+  //       });
+  //       this.handleInventories(event);
+  //     });
 
   fetchLocations() {
     fetch(`${process.env.REACT_APP_API_URL}/get_locations/`, {
@@ -646,14 +664,20 @@ handleShowAddInventory(event) {
   }
 
   handleUpdateInventory(event){
+    
     this.setState({
-      current_count: event.target.value
+      current_count: event.target.value,
+    }, () => {
+      console.dir(JSON.parse(JSON.stringify(this.state.current_inventories[0][this.state.current_part_selected][1]['location_desc'])))
     });
   }
 
   submitUpdateInventory(event) {
-    this.updateInventory(this.state.current_part_selected)
-
+    this.setState({
+      current_location: this.state.current_inventories[0][this.state.current_part_selected][1]['location_desc']
+    }, () => {
+      this.updateInventory(this.state.current_part_selected);
+    });
   }
 
   render(){
@@ -869,9 +893,9 @@ handleShowAddInventory(event) {
                             */}
                             <ButtonGroup aria-label="Inventory for this Part">
                               <Button className="mt-2 mr-2" onClick={this.handleShowUpdateInventory} variant="warning">Update Inventory for this part</Button>
-                              <Button className="mt-2" onClick={this.handleShowAddInventory} variant="success">Add Inventory for this part</Button>
+                              {/* <Button className="mt-2" onClick={this.handleShowAddInventory} variant="success">Add Inventory for this part</Button> */}
                             </ButtonGroup>
-                            {
+                            {/* {
                               (this.state.showAddInventory) ?
                                 <div>
                                 <Card>
@@ -908,7 +932,7 @@ handleShowAddInventory(event) {
                                 </div>
                               :
                                 <p> </p>
-                            }
+                            } */}
                             {
                               (this.state.showUpdateInventory) ?
                                 <div>
@@ -923,7 +947,7 @@ handleShowAddInventory(event) {
                                         })
                                       }
                                     </Form.Control>
-                                    <Form.Label> New Location of inventory </Form.Label>
+                                    {/* <Form.Label> New Location of inventory </Form.Label>
                                     <Form.Control as="input" id="input-location" onChange={this.handleLocation}>
 
                                     </Form.Control>
@@ -935,7 +959,7 @@ handleShowAddInventory(event) {
                                             })
                                       }
                                       <option value="add_location">Add New Location</option>
-                                    </Form.Control>
+                                    </Form.Control> */}
                                     <Form.Label> New Count of inventory </Form.Label>
                                     <Form.Control as="input" id="input-inventory" onChange={this.handleUpdateInventory}>
 

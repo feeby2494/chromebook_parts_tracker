@@ -459,6 +459,46 @@ def use_part(part_number):
     # Need to convert the URL encoded string, part_number, to UTF-8, so we can query the DB!
     part_number = urllib.parse.unquote(part_number)
 
+    def get_location_id(part_id):
+        location_ids = []
+
+        locations = db.session.query(Inventories).filter_by(part_id=part_id).all()
+        for location in locations:
+            print(location.location_id)
+            # location_ids[location.location_id] = location.location_id
+            location_ids.append(location.location_id)
+        return location_ids
+
+    def get_location_desc_per_location_id(location_id):
+        location_desc = db.session.query(Locations).filter_by(location_id=location_id).first().location_desc
+        return location_desc
+
+    def get_inventory(part_id, location_id):
+        inventory = db.session.query(Inventories).filter_by(part_id=part_id,location_id=location_id).first()
+        return inventory
+
+    def get_part_id(part_number):
+        part_id = db.session.query(Parts).filter_by(part_number=part_number).first().part_id
+        return part_id
+
+    # This is the messiest way to organize this inventory object. both this and front end need to be redesigned.
+
+    def get_request_inventory():
+        part_id = get_part_id(part_number)
+        inventory_object = {}
+        locations = get_location_id(part_id)
+        print(locations)
+        for location in locations:
+            print(location)
+            inventory_by_loc = get_inventory(part_id, location)
+            print(inventory_by_loc)
+            inventory_object[part_number] = {}
+            inventory_object[part_number][location] = {}
+            inventory_object[part_number][location]['count'] = inventory_by_loc.count
+            inventory_object[part_number][location]['location_desc'] = get_location_desc_per_location_id(location)
+        return inventory_object
+
+
     if request.method == 'PATCH':
         part_id = db.session.query(Parts).filter_by(part_number=part_number).first().part_id
         current_inventory = db.session.query(Inventories).filter_by(part_id=part_id).first()
@@ -468,10 +508,12 @@ def use_part(part_number):
             if current_inventory.count == 0:
                 return Response(json.dumps({"message": "Count is already zero!"}), mimetype='application/json')
             current_inventory.count -= 1 # Hope this is right syntax
+            print("this one")
             db.session.commit()
 
+            inventory_object = get_request_inventory()
 
-        return Response(json.dumps(current_inventory), mimetype='application/json')
+        return Response(json.dumps(inventory_object), mimetype='application/json')
     return Response(json.dumps({"message": "Error: could not deduct one from inventory"}), mimetype='application/json')
 
 @app.route(f"/{os.environ.get('API_ROOT_URL')}/get_locations/", methods = ['GET', 'POST', 'PATCH'])
