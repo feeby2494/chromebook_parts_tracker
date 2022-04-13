@@ -147,7 +147,7 @@ def get_model_from_part(part_number):
                 repair_object['name'] = repair_name
                 repair_object['id'] = repair_id
                 repairs_for_this_part.append(repair_object)
-    
+
     return Response(json.dumps({"repairs": repairs_for_this_part}), mimetype='application/json')
 
 
@@ -409,15 +409,15 @@ def get_inventory(part_number):
             inventory_by_loc = get_inventory(part_id, location)
             print(inventory_by_loc)
             inventory_object[part_number] = {}
-            inventory_object[part_number][location] = {}
-            inventory_object[part_number][location]['count'] = inventory_by_loc.count
-            inventory_object[part_number][location]['location_desc'] = get_location_desc_per_location_id(location)
+            inventory_object[part_number] = {}
+            inventory_object[part_number]['count'] = inventory_by_loc.count
+            inventory_object[part_number]['location_desc'] = get_location_desc_per_location_id(location)
         return inventory_object
 
     if request.method == 'GET':
 
         inventory_object = get_request_inventory()
-
+        print(inventory_object)
         return Response(json.dumps(inventory_object), mimetype='application/json')
 
     if request.method == 'POST':

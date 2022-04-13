@@ -641,9 +641,9 @@ handleShowAddInventory(event) {
       this.setState({
         current_inventories: this.state.inventories
       }, () => {
-        console.log(this.state.current_inventories.filter(obj => { return obj[this.state.current_part_selected]})[0][this.state.current_part_selected][13]['location_desc'])
+        console.log(this.state.current_inventories.filter(obj => { return obj[this.state.current_part_selected]})[0][this.state.current_part_selected]['location_desc'])
         this.setState({
-          current_location: this.state.current_inventories.filter(obj => { return obj[this.state.current_part_selected]})[0][this.state.current_part_selected][13]['location_desc']
+          current_location: this.state.current_inventories.filter(obj => { return obj[this.state.current_part_selected]})[0][this.state.current_part_selected]['location_desc']
         })
       })
       console.log(`Current part selected is: ${this.state.current_part_selected}`)
