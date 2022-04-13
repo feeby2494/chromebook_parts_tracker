@@ -449,7 +449,7 @@ class InventoryManagement extends React.Component {
                 current_inventories: this.state.inventories
             });
           });
-          
+
       }
     });
   }
@@ -637,7 +637,17 @@ handleShowAddInventory(event) {
   handleCurrentPartSelected(event){
     this.setState({
       current_part_selected: event.target.value
+    }, () => {
+      this.setState({
+        current_inventories: this.state.inventories
+      }, () => {
+        this.setState({
+          current_location: this.state.current_inventories[0][this.state.current_part_selected][13]['location_desc']
+        })
+      })
+      console.log(`Current part selected is: ${this.state.current_part_selected}`)
     });
+
   }
 
   handleLocation(event){
@@ -657,24 +667,24 @@ handleShowAddInventory(event) {
   }
 
   handleShowUpdateInventory(event){
-    console.log(` the part is: ${this.props.children}`)
+    console.log(` the part is: ${this.state.current_part_selected}`)
     this.setState({
       showUpdateInventory: !this.state.showUpdateInventory
     });
   }
 
   handleUpdateInventory(event){
-    
+
     this.setState({
       current_count: event.target.value,
     }, () => {
-      console.dir(JSON.parse(JSON.stringify(this.state.current_inventories[0][this.state.current_part_selected][1]['location_desc'])))
+      console.dir(JSON.parse(JSON.stringify(this.state.current_inventories[0][this.state.current_part_selected][13]['location_desc'])))
     });
   }
 
   submitUpdateInventory(event) {
     this.setState({
-      current_location: this.state.current_inventories[0][this.state.current_part_selected][1]['location_desc']
+      current_location: this.state.current_inventories[0][this.state.current_part_selected][13]['location_desc']
     }, () => {
       this.updateInventory(this.state.current_part_selected);
     });
@@ -832,8 +842,6 @@ handleShowAddInventory(event) {
                       (this.state.current_parts.length > 0) ?
                         <div>
                           <ListGroup as="ul">
-
-
 
                             <ListGroup.Item as="li" active>Available Parts for this repair</ListGroup.Item>
                             {/* Table Style*/}
