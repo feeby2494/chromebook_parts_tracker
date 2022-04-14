@@ -1005,14 +1005,33 @@ handleShowAddInventory(event) {
                                     // }))
 
         // Object.keys(map).map((key) => map[key]);
-                                    let array = Object.keys(inventory).map((part_name) => {
-                                        return Object.keys(inventory[part_name]).map((location) => {
-                                          let count_name = inventory[part_name][location]["count"];
-                                          let location_name = inventory[part_name][location]["location_desc"];
-                                          let location_id = location;
-                                          let part_item_name = part_name;
+                                    // let array = Object.keys(inventory).map((part_name) => {
+                                    //     return Object.keys(inventory[part_name]).map((location) => {
+                                    //       let count_name = inventory[part_name][location]["count"];
+                                    //       let location_name = inventory[part_name][location]["location_desc"];
+                                    //       let location_id = location;
+                                    //       let part_item_name = part_name;
+                                    //
+                                    //       return <tr><td>{part_item_name}</td><td>{count_name}</td><td>{location_name}</td></tr>
+                                    //         // return Object.keys(inventory[part_name][location]).map((count, location_desc) => {
+                                    //         //     let count_name = inventory[part_name][location][count];
+                                    //         //     let location_name = inventory[part_name][location][location_desc];
+                                    //         //     let location_id = location;
+                                    //         //     let part_item_name = part_name;
+                                    //         //     return <ListGroup.Item as="li">Part Number: {part_item_name} | Location_id: {location_id} | Count: {count_name} | Location_name: {location_name}</ListGroup.Item>
+                                    //         // });
+                                    //     });
+                                    // })
 
-                                          return <tr><td>{part_item_name}</td><td>{count_name}</td><td>{location_name}</td></tr>
+                                    let array = Object.keys(inventory).map((part_name) => {
+                                      let count_name = inventory[part_name]["count"];
+                                      let location_name = inventory[part_name]["location_desc"];
+
+                                      let part_item_name = part_name;
+
+
+
+                                        return <tr><td>{part_item_name}</td><td>{count_name}</td><td>{location_name}</td></tr>
                                             // return Object.keys(inventory[part_name][location]).map((count, location_desc) => {
                                             //     let count_name = inventory[part_name][location][count];
                                             //     let location_name = inventory[part_name][location][location_desc];
@@ -1021,7 +1040,7 @@ handleShowAddInventory(event) {
                                             //     return <ListGroup.Item as="li">Part Number: {part_item_name} | Location_id: {location_id} | Count: {count_name} | Location_name: {location_name}</ListGroup.Item>
                                             // });
                                         });
-                                    })
+
 
                                     return <tbody>{array}</tbody>
                                   })}
