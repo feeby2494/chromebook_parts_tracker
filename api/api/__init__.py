@@ -41,6 +41,7 @@ print(sys.path)
 import api.api
 import api.user.routes
 import api.jwt_token.routes
+import api.dispatch.routes
 
 if __name__ == '__main__':
     app.run(debug=True)

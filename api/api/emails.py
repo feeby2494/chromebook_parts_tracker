@@ -36,6 +36,7 @@ def generate_then_send(app, sender, recipient, subject, body, attachment_path):
   if attachment_path:
       attachment_filename = os.path.basename(attachment_path)
       mime_type, _ = mimetypes.guess_type(attachment_path)
+      print(attachment_path)
       mime_type, mime_subtype = mime_type.split('/', 1)
 
       with open(attachment_path, 'rb') as ap:

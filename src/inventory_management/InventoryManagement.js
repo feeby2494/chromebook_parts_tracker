@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Badge from 'react-bootstrap/Badge';
 import Table from 'react-bootstrap/Table';
+import InventoryForRepairTable from '../components/InventoryForRepairTable';
 
 // Main React Component
 
@@ -974,81 +975,8 @@ handleShowAddInventory(event) {
                                 </div>
                               :
                                 <p> </p>
-                            }
-                            {(this.state.current_inventories.length > 0) ?
-                              <>
-                                <ListGroup.Item as="li" active>Inventory for parts</ListGroup.Item>
-
-                                  {/*
-
-                                    I just cannot read this. How can I follow something so messy and encapsulated like this?
-                                    Both backend and frontend for inventory need to be redesigned. I litterally cannot do anything
-                                    with this code.
-
-                                    Well, now it works. Have no clue. I'm not touching this mess right now!!!
-                                    */}
-                                  <Table striped bordered>
-                                  <thead>
-                                    <tr>
-                                      <td>Part Number</td>
-                                      <td>Count</td>
-                                      <td>Location</td>
-                                    </tr>
-                                  </thead>
-                                  {this.state.current_inventories.map((inventory) => {
-                                    // console.log(Object.keys(inventory).map((part_name) => {
-                                    //     return Object.keys(inventory[part_name]).map((location) => {
-                                    //         return Object.keys(inventory[part_name][location]).map((count) => {
-                                    //             return inventory[part_name][location][count];
-                                    //         });
-                                    //     });
-                                    // }))
-
-        // Object.keys(map).map((key) => map[key]);
-                                    // let array = Object.keys(inventory).map((part_name) => {
-                                    //     return Object.keys(inventory[part_name]).map((location) => {
-                                    //       let count_name = inventory[part_name][location]["count"];
-                                    //       let location_name = inventory[part_name][location]["location_desc"];
-                                    //       let location_id = location;
-                                    //       let part_item_name = part_name;
-                                    //
-                                    //       return <tr><td>{part_item_name}</td><td>{count_name}</td><td>{location_name}</td></tr>
-                                    //         // return Object.keys(inventory[part_name][location]).map((count, location_desc) => {
-                                    //         //     let count_name = inventory[part_name][location][count];
-                                    //         //     let location_name = inventory[part_name][location][location_desc];
-                                    //         //     let location_id = location;
-                                    //         //     let part_item_name = part_name;
-                                    //         //     return <ListGroup.Item as="li">Part Number: {part_item_name} | Location_id: {location_id} | Count: {count_name} | Location_name: {location_name}</ListGroup.Item>
-                                    //         // });
-                                    //     });
-                                    // })
-
-                                    let array = Object.keys(inventory).map((part_name) => {
-                                      let count_name = inventory[part_name]["count"];
-                                      let location_name = inventory[part_name]["location_desc"];
-
-                                      let part_item_name = part_name;
-
-
-
-                                        return <tr><td>{part_item_name}</td><td>{count_name}</td><td>{location_name}</td></tr>
-                                            // return Object.keys(inventory[part_name][location]).map((count, location_desc) => {
-                                            //     let count_name = inventory[part_name][location][count];
-                                            //     let location_name = inventory[part_name][location][location_desc];
-                                            //     let location_id = location;
-                                            //     let part_item_name = part_name;
-                                            //     return <ListGroup.Item as="li">Part Number: {part_item_name} | Location_id: {location_id} | Count: {count_name} | Location_name: {location_name}</ListGroup.Item>
-                                            // });
-                                        });
-
-
-                                    return <tbody>{array}</tbody>
-                                  })}
-                                </Table>
-                              </>
-                              :
-                                <> </>
-                            }
+                            } 
+                            <InventoryForRepairTable current_inventories = {this.state.current_inventories}/>
                           </ListGroup>
                         </div>
                       :
