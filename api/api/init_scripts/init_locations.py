@@ -4,14 +4,14 @@ import json
 
 def post_new_location(new_location_desc):
     # set up post to api for adding new location
-    r = requests.post('https://chromebooks.jamielynn.dev/api/get_locations', data = json.dumps({"location_desc" : new_location_desc}), headers = {"Content-Type" : "application/json"})
+    r = requests.post('https://chromebooks.jamielynn.dev/api/get_locations', data = json.dumps({"location_desc" : new_location_desc}), headers = {"Content-Type" : "application/json"}, timeout=60)
 
     # See in terminal if this is doing anything!
     print(r)
 
 def check_if_location_exists_array():
     # set up post to api for adding new location
-    r = requests.get('https://chromebooks.jamielynn.dev/api/get_locations/')
+    r = requests.get('https://chromebooks.jamielynn.dev/api/get_locations/', timeout=60)
 
     # See in terminal if this is doing anything!
     location_desc_that_exist = r.json().keys()
