@@ -66,7 +66,7 @@ with open(f'all_inventory_with_devices_not_shipped_{date.today()}.csv', 'w') as 
     for line in inv:
         line_obj = [line["part_number"], line["cyma_count"], line["physical_count"]]
         for part in dic_of_part_counts:
-            if part is not '' and part is not None:
+            if part != '' and part is not None:
                 if line["part_number"] == part:
                     print(part, line["cyma_count"], line["physical_count"], dic_of_part_counts[part])
                     new_phy_count = int(line["physical_count"]) + int(dic_of_part_counts[part])
